@@ -1,11 +1,11 @@
 import React from 'react';
 import { ResizableLayout } from './components/layout/ResizableLayout';
 import { ChatPanel } from './components/chat/ChatPanel';
-import { CodeEditor } from './components/editor/CodeEditor';
+import { TabbedEditor } from './components/editor/TabbedEditor';
 import { useApp } from './hooks/useApp';
 
 function App() {
-  const { chat, files, actions } = useApp();
+  const { chat, files, actions, video } = useApp();
 
   const chatPanel = (
     <ChatPanel 
@@ -15,20 +15,30 @@ function App() {
     />
   );
 
-  const codePanel = (
-    <CodeEditor 
+  const editorPanel = (
+    <TabbedEditor
+      // Code Editor Props
       files={files.files}
       activeFile={files.activeFile}
       onFileSelect={files.setActiveFile}
+      onFileUpdate={files.updateFile}
       onRunCode={actions.handleRunCode}
+      
+      // Video Editor Props
+      clips={video.clips}
+      onClipSelect={video.selectClip}
+      onClipUpdate={video.updateClip}
+      onExport={video.exportVideo}
     />
   );
 
   return (
     <ResizableLayout 
       leftPanel={chatPanel}
-      rightPanel={codePanel}
-      initialLeftWidth={50}
+      rightPanel={editorPanel}
+      initialLeftWidth={35}
+      minWidth={25}
+      maxWidth={60}
     />
   );
 }

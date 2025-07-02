@@ -10,6 +10,7 @@ interface CodeEditorProps {
   files: CodeFile[];
   activeFile: CodeFile;
   onFileSelect: (file: CodeFile) => void;
+  onFileUpdate?: (file: CodeFile) => void;
   onRunCode?: () => void;
   onCopyCode?: () => void;
   onDownloadCode?: () => void;
@@ -19,6 +20,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   files,
   activeFile,
   onFileSelect,
+  onFileUpdate,
   onRunCode,
   onCopyCode,
   onDownloadCode
@@ -37,6 +39,12 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
     element.click();
     document.body.removeChild(element);
     if (onDownloadCode) onDownloadCode();
+  };
+
+  const handleCodeChange = (value: string | undefined) => {
+    if (value !== undefined && onFileUpdate) {
+      onFileUpdate({ ...activeFile, content: value });
+    }
   };
 
   return (
@@ -60,7 +68,10 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           onFileSelect={onFileSelect}
         />
         
-        <CodeDisplay file={activeFile} />
+        <CodeDisplay 
+          file={activeFile} 
+          onCodeChange={handleCodeChange}
+        />
       </div>
 
       <StatusBar language={activeFile.language} />
