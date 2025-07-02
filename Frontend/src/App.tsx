@@ -1,32 +1,35 @@
 import React from 'react';
+import { ResizableLayout } from './components/layout/ResizableLayout';
 import { ChatPanel } from './components/chat/ChatPanel';
-import { CodeEditor } from "./components/editor/CodeEditor";
-import { useChat } from './hooks/UseChat';
-import { useFiles } from './hooks/useFiles';
+import { CodeEditor } from './components/editor/CodeEditor';
+import { useApp } from './hooks/useApp';
 
 function App() {
-  const { messages, sendMessage, isLoading } = useChat();
-  const { files, activeFile, setActiveFile } = useFiles();
+  const { chat, files, actions } = useApp();
 
-  const handleRunCode = () => {
-    console.log('Running code:', activeFile.content);
-    // Implement code execution logic
-  };
+  const chatPanel = (
+    <ChatPanel 
+      messages={chat.messages} 
+      onSendMessage={chat.sendMessage}
+      isLoading={chat.isLoading}
+    />
+  );
+
+  const codePanel = (
+    <CodeEditor 
+      files={files.files}
+      activeFile={files.activeFile}
+      onFileSelect={files.setActiveFile}
+      onRunCode={actions.handleRunCode}
+    />
+  );
 
   return (
-    <div className="h-screen bg-black text-white flex">
-      <ChatPanel 
-        messages={messages} 
-        onSendMessage={sendMessage}
-        isLoading={isLoading}
-      />
-      <CodeEditor 
-        files={files}
-        activeFile={activeFile}
-        onFileSelect={setActiveFile}
-        onRunCode={handleRunCode}
-      />
-    </div>
+    <ResizableLayout 
+      leftPanel={chatPanel}
+      rightPanel={codePanel}
+      initialLeftWidth={50}
+    />
   );
 }
 

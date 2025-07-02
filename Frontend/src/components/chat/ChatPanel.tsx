@@ -16,7 +16,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   isLoading = false
 }) => {
   return (
-    <div className="w-1/2 border-r border-gray-600 flex flex-col">
+    <div className="w-full flex flex-col h-full">
       {/* Chat Header */}
       <div className="bg-gray-900 px-4 py-3 border-b border-gray-600 flex items-center justify-between">
         <div className="flex items-center space-x-2">

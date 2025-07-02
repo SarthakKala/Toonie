@@ -40,7 +40,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   };
 
   return (
-    <div className="w-1/2 flex flex-col">
+    <div className="w-full flex flex-col h-full">
       <EditorHeader 
         onRunCode={onRunCode}
         onCopyCode={handleCopyCode}
