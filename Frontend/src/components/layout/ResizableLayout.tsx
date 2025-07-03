@@ -58,7 +58,7 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
   }, [isDragging]);
 
   return (
-    <div ref={containerRef} className="h-screen bg-black text-white flex select-none">
+    <div ref={containerRef} className="h-screen text-white flex select-none" style={{ backgroundColor: '#161616' }}>
       {/* Left Panel */}
       <div 
         style={{ width: `${leftWidth}%` }}

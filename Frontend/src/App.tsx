@@ -1,3 +1,4 @@
+// Frontend/src/App.tsx
 import React from 'react';
 import { ResizableLayout } from './components/layout/ResizableLayout';
 import { ChatPanel } from './components/chat/ChatPanel';
@@ -6,6 +7,28 @@ import { useApp } from './hooks/useApp';
 
 function App() {
   const { chat, files, actions, video } = useApp();
+
+  const handleExportClip = () => {
+    console.log('Exporting current clip:', files.activeFile.content);
+    // Implementation for exporting the current animation as a standalone clip
+    alert('Clip exported successfully! This would save your animation as a video file.');
+  };
+
+  const handleMoveToVideoEditor = () => {
+    console.log('Moving current clip to video editor');
+    // Implementation for adding the current animation to the video editor timeline
+    const newClip = {
+      id: Date.now().toString(),
+      name: `${files.activeFile.name} Animation`,
+      duration: 5.0,
+      startTime: 0,
+      endTime: 5,
+      type: 'animation' as const,
+      content: files.activeFile.content
+    };
+    video.updateClip(newClip);
+    alert('Clip added to video editor timeline!');
+  };
 
   const chatPanel = (
     <ChatPanel 
@@ -34,6 +57,10 @@ function App() {
       onClipSelect={video.selectClip}
       onClipUpdate={video.updateClip}
       onExport={video.exportVideo}
+      
+      // Preview Props
+      onExportClip={handleExportClip}
+      onMoveToVideoEditor={handleMoveToVideoEditor}
     />
   );
 

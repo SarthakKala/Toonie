@@ -1,3 +1,4 @@
+// Frontend/src/types/video.ts
 export interface VideoClip {
   id: string;
   name: string;
@@ -17,4 +18,4 @@ export interface TimelineTrack {
   isVisible: boolean;
 }
 
-export type EditorMode = 'code' | 'video';
+export type EditorMode = 'code' | 'preview' | 'video';
