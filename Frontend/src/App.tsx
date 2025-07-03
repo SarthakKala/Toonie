@@ -20,7 +20,12 @@ function App() {
       // Code Editor Props
       files={files.files}
       activeFile={files.activeFile}
-      onFileSelect={files.setActiveFile}
+      onFileSelect={(file) => {
+        const selected = files.files.find(f => f.name === file.name && f.content === file.content);
+        if (selected) {
+          files.setActiveFile(selected);
+        }
+      }}
       onFileUpdate={files.updateFile}
       onRunCode={actions.handleRunCode}
       

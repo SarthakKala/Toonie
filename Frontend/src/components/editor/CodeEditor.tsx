@@ -14,6 +14,7 @@ interface CodeEditorProps {
   onRunCode?: () => void;
   onCopyCode?: () => void;
   onDownloadCode?: () => void;
+  onNewFile?: () => void;
 }
 
 export const CodeEditor: React.FC<CodeEditorProps> = ({
@@ -23,7 +24,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   onFileUpdate,
   onRunCode,
   onCopyCode,
-  onDownloadCode
+  onDownloadCode,
+  onNewFile
 }) => {
   const handleCopyCode = () => {
     navigator.clipboard.writeText(activeFile.content);
@@ -61,11 +63,15 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         onFileSelect={onFileSelect}
       />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-0">
         <FileExplorer 
           files={files}
           activeFile={activeFile}
           onFileSelect={onFileSelect}
+          onNewFile={onNewFile}
+          defaultWidth={250}
+          minWidth={200}
+          maxWidth={400}
         />
         
         <CodeDisplay 
