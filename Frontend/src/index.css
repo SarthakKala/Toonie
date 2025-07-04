@@ -3,6 +3,37 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html, body {
+  background: #161616 !important;
+  color-scheme: dark;
+}
+
+.ai-chat-hide-cursor * {
+  cursor: none !important;
+}
+
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 6px;
+  background: #161616;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FAF9F6;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: #202020;
+}
+
+/* For Firefox */
+/* html {
+  scrollbar-width:thin;
+  scrollbar-color: #FAF9F6 #161616;
+} */
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -118,3 +149,4 @@
     @apply bg-background text-foreground;
   }
 }
+
