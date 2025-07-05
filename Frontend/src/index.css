@@ -4,6 +4,7 @@
   --color-gray-850: #1f2937;
   --color-gray-950: #030712;
   --color-custom-bg: #161616;
+  --color-custom-text: #FAF9F6;
 }
 
 body {
@@ -12,6 +13,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #161616;
+  color: #FAF9F6;
 }
 
 /* Set the root background */
@@ -23,4 +25,38 @@ body {
 /* Override any existing background colors */
 html {
   background-color: #161616;
+}
+
+/* Custom utility classes */
+.bg-custom-bg {
+  background-color: #161616;
+}
+
+.text-custom {
+  color: #FAF9F6;
+}
+
+.bg-custom-black {
+  background-color: #000000;
+}
+
+/* Override existing classes for better contrast */
+.bg-gray-900 {
+  background-color: #000000 !important;
+}
+
+.bg-gray-800 {
+  background-color: #161616 !important;
+}
+
+.text-white {
+  color: #FAF9F6 !important;
+}
+
+.text-gray-400 {
+  color: #9CA3AF !important;
+}
+
+.text-gray-300 {
+  color: #D1D5DB !important;
 }

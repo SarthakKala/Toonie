@@ -26,25 +26,34 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="p-4 border-t border-gray-600">
-    <div className="flex space-x-2">
-      <textarea
-        value={inputMessage}
-        onChange={(e) => setInputMessage(e.target.value)}
-        onKeyDown={handleKeyPress}
-        placeholder="Describe what you want to build..."
-        className="flex-1 bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white resize-none text-white placeholder-gray-400"
-        rows={3}
-        disabled={disabled}
-      />
-      <button
-        onClick={handleSendMessage}
-        disabled={disabled || !inputMessage.trim()}
-        className="bg-white hover:bg-gray-200 text-black rounded-lg px-4 py-2 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <Send className="w-4 h-4" />
-      </button>
-    </div>
+    <div className="p-4 border-t border-gray-600" style={{ backgroundColor: '#161616' }}>
+      <div className="flex space-x-2">
+        <textarea
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+          onKeyDown={handleKeyPress}
+          placeholder="Describe what you want to build..."
+          className="flex-1 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white resize-none"
+          style={{ 
+            backgroundColor: '#000000',
+            color: '#FAF9F6',
+            borderColor: '#4B5563'
+          }}
+          rows={3}
+          disabled={disabled}
+        />
+        <button
+          onClick={handleSendMessage}
+          disabled={disabled || !inputMessage.trim()}
+          className="rounded-lg px-4 py-2 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ 
+            backgroundColor: '#FAF9F6',
+            color: '#000000'
+          }}
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 };
