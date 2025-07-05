@@ -55,17 +55,17 @@ const Grid: React.FC = () => {
           ...cardStyle,
           gridColumn: "3 / 4",
           gridRow: "1 / 2",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "0.6rem 0.4rem", // Even smaller padding
-          minWidth: 0,
-          width: "100%",
-          boxSizing: "border-box",
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "center",
+          // alignItems: "center",
+          // padding: "0.6rem 0.4rem", // Even smaller padding
+          // minWidth: 0,
+          // width: "100%",
+          // boxSizing: "border-box",
         }}
       >
-        <h3
+        {/* <h3
           style={{
             color: "#fff",
             fontSize: "1.05rem", // Smaller heading
@@ -79,8 +79,8 @@ const Grid: React.FC = () => {
           }}
         >
           Simple 3 step flow:
-        </h3>
-        <ol
+        </h3> */}
+        {/* <ol
           style={{
             color: "#b3b3b3",
             fontSize: "0.93rem", // Smaller text
@@ -105,7 +105,7 @@ const Grid: React.FC = () => {
               the animated scene
             </span>
           </li>
-        </ol>
+        </ol> */}
       </div>
 
       

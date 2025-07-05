@@ -58,7 +58,7 @@ function Landing() {
             <SmoothCursor />
             <Navbar />
 
-            //Particles+Arrow
+            {/* //Particles+Arrow */}
             <div
               className="relative overflow-hidden w-full h-screen"
               style={{ minHeight: "100vh" }}
@@ -188,10 +188,88 @@ function Landing() {
             </div>
             
             {/* Footer Section */}
-            <footer style={{ position: "relative", width: "100%", minHeight: "120px" }}>
-+                <DotPatternDemo />
-                {/* ...footer content if any... */}
-            </footer>
+
+          {/* Footer Section */}
+          <footer
+            style={{
+              position: "relative",
+              width: "100%",
+              minHeight: "260px",
+              background: "#161616",
+              overflow: "hidden",
+              marginTop: "2rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+            }}
+          >
+            {/* Dotted background */}
+            <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+              <DotPatternDemo />
+            </div>
+
+            {/* Footer content */}
+            <div
+              className="relative z-10 w-full h-full flex flex-col justify-between ai-chat-hide-cursor"
+              style={{ minHeight: 260, padding: "2.5rem 0 1.5rem 0" }}
+            >
+              <div className="flex flex-row justify-between w-[90%] mx-auto items-start">
+                {/* Left links */}
+                <div className="flex flex-col gap-2">
+                  <a href="#" className="text-white text-xl font-semibold mb-2 hover:underline transition">Chat</a>
+                  <a href="#" className="text-white text-xl font-semibold mb-2 hover:underline transition">Features</a>
+                  <a href="#" className="text-white text-xl font-semibold hover:underline transition">Contact</a>
+                </div>
+                {/* Right newsletter */}
+                <div className="flex flex-col items-end gap-2 max-w-[340px] w-full">
+                  <span className="text-white text-base mb-2 text-right opacity-90">
+                    Get industry insights and creative inspiration straight to your inbox.
+                  </span>
+                  <form className="flex flex-row w-full border-b border-white/30">
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      className="bg-transparent outline-none border-none text-white placeholder:text-white/60 flex-1 py-2 px-0 text-base"
+                    />
+                    <button
+                      type="submit"
+                      className="text-white text-xl px-2 hover:opacity-80 transition"
+                      aria-label="Subscribe"
+                    >
+                      →
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              {/* Large Toonie text */}
+              <div className="w-full flex items-end justify-start relative mt-8 mb-2">
+                <span
+                  className="text-[min(16vw,160px)] font-extrabold text-[#FAF9F6] leading-none tracking-tight opacity-95"
+                  style={{
+                    fontFamily: "inherit",
+                    letterSpacing: "-0.04em",
+                    lineHeight: 1,
+                    userSelect: "none",
+                    marginLeft: "5%", // ensure left alignment
+                  }}
+                >
+                  Toonie
+                </span>
+              </div>
+
+              {/* Bottom bar */}
+              <div className="w-[90%] mx-auto border-t border-white/20 pt-3 flex flex-row justify-between items-center text-white/80 text-sm">
+                <span>Copyright © Toonie. All rights reserved</span>
+                <span>Jaipur, Rajasthan, India</span>
+                <div className="flex gap-8">
+                  <a href="#" className="hover:underline">GitHub</a>
+                  <a href="#" className="hover:underline">Instagram</a>
+                  <a href="#" className="hover:underline">LinkedIn</a>
+                </div>
+              </div>
+            </div>
+          </footer>
                           
           </div>
         </div>

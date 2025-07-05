@@ -27,11 +27,11 @@ html, body {
   background: #202020;
 }
 
-/* For Firefox */
-/* html {
-  scrollbar-width:thin;
-  scrollbar-color: #FAF9F6 #161616;
-} */
+/* Custom text selection color for the whole site */
+::selection {
+  background: #b3b3b3;   /* light grey background */
+  color: #161616;        /* dark text */
+}
 
 
 @theme inline {

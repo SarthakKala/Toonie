@@ -1,6 +1,6 @@
 import React from "react";
 
-const marqueeText = "•A robot dancing under starlight •Ocean waves crashing against rocks •A cat sleeping on a floating leaf •Fireflies blinking in a forest at night •A bouncing basketball on a rainy street •Two planets orbiting each other in deep space •A fish jumping over lily pads •A kite flying in a stormy sky •Leaves swirling in autumn wind •A train passing through a pixel city •Butterflies following a glowing trail";
+const marqueeText = "• A robot dancing under starlight  • Ocean waves crashing against rocks  • A cat sleeping on a floating leaf  • Fireflies blinking in a forest at night  • A bouncing basketball on a rainy street  • Two planets orbiting each other in deep space  • A fish jumping over lily pads  • A kite flying in a stormy sky  • Leaves swirling in autumn wind  • A train passing through a pixel city  • Butterflies following a glowing trail  ";
 
 const MarqueeText: React.FC = () => {
     return (
