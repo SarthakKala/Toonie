@@ -67,7 +67,6 @@ export const CodeDisplay: React.FC<CodeDisplayProps> = ({ file, onCodeChange }) 
               selectionHighlight: true,
               occurrencesHighlight: 'singleFile',
               codeLens: false,
-              folding: true,
               foldingHighlight: true,
               unfoldOnClickAfterEndOfLine: false,
               showFoldingControls: 'mouseover',

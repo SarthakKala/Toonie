@@ -1,8 +1,8 @@
 // Frontend/src/App.tsx
 import React from 'react';
-import { ResizableLayout } from './components/layout/ResizableLayout';
-import { ChatPanel } from './components/chat/ChatPanel';
-import { TabbedEditor } from './components/editor/TabbedEditor';
+import { ResizableLayout } from './components1/layout/ResizableLayout';
+import { ChatPanel } from './components1/chat/ChatPanel';
+import { TabbedEditor } from './components1/editor/TabbedEditor';
 import { useApp } from './hooks/useApp';
 
 function App() {
