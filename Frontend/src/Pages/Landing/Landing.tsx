@@ -7,6 +7,7 @@ import { Particles } from "@/Pages/Landing/components/magicui/particles";
 import { SmoothCursor } from "@/Pages/Landing/components/ui/smooth-cursor";
 import AIChat from "./components2/AIChat";
 import { DotPatternDemo } from "./components2/dotPattern";
+import "./stylesheet/index.css";
 
 function Landing() {
   const [loading, setLoading] = useState(true);
