@@ -3,8 +3,8 @@ import { MessageLoadingDemo } from "./components2/Loader";
 import Grid from "./components2/Grid";
 import Navbar from "./components2/Navbar";
 import MarqueeText from "./components2/MarqueeText";
-import { Particles } from "@/components/magicui/particles";
-import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import { Particles } from "@/Pages/Landing/components/magicui/particles";
+import { SmoothCursor } from "@/Pages/Landing/components/ui/smooth-cursor";
 import AIChat from "./components2/AIChat";
 import { DotPatternDemo } from "./components2/dotPattern";
 

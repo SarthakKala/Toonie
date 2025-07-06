@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { DotPattern } from "@/components/magicui/dot-pattern";
+import { cn } from "@/Pages/Landing/lib/utils";
+import { DotPattern } from "@/Pages/Landing/components/magicui/dot-pattern";
 
 export function DotPatternDemo() {
   return (

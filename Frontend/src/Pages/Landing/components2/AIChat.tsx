@@ -1,4 +1,4 @@
-import { AnimatedAIChat } from "@/components/ui/animated-ai-chat"
+import { AnimatedAIChat } from "@/Pages/Landing/components/ui/animated-ai-chat"
 
 export function AiChat() {
   return (

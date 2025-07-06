@@ -1,4 +1,4 @@
-import { MessageLoading } from "@/components/ui/message-loading";
+import { MessageLoading } from "@/Pages/Landing/components/ui/message-loading";
 
 function MessageLoadingDemo() {
   return (

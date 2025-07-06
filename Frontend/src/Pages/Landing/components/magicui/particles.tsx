@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/Pages/Landing/lib/utils";
 import React, {
   ComponentPropsWithoutRef,
   useEffect,
