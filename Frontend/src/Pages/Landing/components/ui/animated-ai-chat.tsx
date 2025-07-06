@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, useTransition } from "react";
 import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/Pages/Landing/lib/utils";
 import {
     ImageIcon,
@@ -149,7 +150,7 @@ export function AnimatedAIChat() {
     });
     const [inputFocused, setInputFocused] = useState(false);
     const commandPaletteRef = useRef<HTMLDivElement>(null);
-
+    const navigate = useNavigate();
     const commandSuggestions: CommandSuggestion[] = [
         { 
             icon: <ImageIcon className="w-4 h-4" />, 
@@ -266,6 +267,7 @@ export function AnimatedAIChat() {
                     setIsTyping(false);
                     setValue("");
                     adjustHeight(true);
+                    navigate("/dashboard");
                 }, 3000);
             });
         }

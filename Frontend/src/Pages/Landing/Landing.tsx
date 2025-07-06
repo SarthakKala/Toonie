@@ -51,7 +51,7 @@ function Landing() {
             minHeight: "100vh",
           }}
         >
-          // Iske upper wala loader hai, neeche se main content start hota hai.
+          {/* // Iske upper wala loader hai, neeche se main content start hota hai. */}
           <div
             className="w-full h-full flex flex-col items-center justify-center min-h-screen"
             style={{ backgroundColor: "#161616 " }}
