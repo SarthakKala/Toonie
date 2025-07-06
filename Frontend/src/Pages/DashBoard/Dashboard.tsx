@@ -5,6 +5,7 @@ import { ChatPanel } from './components1/chat/ChatPanel';
 import { TabbedEditor } from './components1/editor/TabbedEditor';
 // Update the import path below to the correct location of useApp, for example:
 import { useApp } from './hooks/useApp';
+import './stylesheet/index.css'
 // If the file does not exist, create 'useApp.ts' in the correct folder and export the hook.
 
 function App() {
