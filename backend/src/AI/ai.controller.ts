@@ -7,15 +7,15 @@ export class AIController {
   constructor(private readonly aiService: AIService) {}
 
   @Post('generate')
-  @HttpCode(HttpStatus.OK)
-  async generateCode(@Body() body: any) {
+  @HttpCode(HttpStatus.OK) //200 
+  async generateCode(@Body() body:  any) {
     const { prompt, context, model, temperature, maxTokens } = body;
     
     const result = await this.aiService.generateP5Code(prompt, {
       context,
       model,
       temperature,
-      maxTokens
+      // maxTokens
     });
 
     return {

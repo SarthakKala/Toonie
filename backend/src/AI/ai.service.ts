@@ -25,7 +25,6 @@ export interface AIResponse {
 export interface GenerateCodeOptions {
   model?: string;
   temperature?: number;
-  maxTokens?: number;
   context?: {
     width?: number;
     height?: number;
@@ -69,7 +68,6 @@ export class AIService {
       const {
         model = this.defaultModel,
         temperature = 0.7,
-        maxTokens = 2000,
         context = {}
       } = options;
 
@@ -86,7 +84,6 @@ export class AIService {
         model,
         messages,
         temperature,
-        max_tokens: maxTokens,
         stream: false
       });
 
@@ -107,8 +104,8 @@ export class AIService {
         success: true,
         data: {
           code: extractedCode,
-          explanation,
-          model,
+          explanation: explanation,
+          model: model,
           usage: aiResponse.usage
         }
       };
@@ -264,12 +261,11 @@ Please provide the improved version with explanations of the changes made.`;
         ...conversationHistory,
         { role: 'user', content: message }
       ];
-      console.log(`Chatting with AI: ${message}`);
+      console.error(`Chatting with AI: ${messages}`);
       const response = await this.client.post('/chat/completions', {
         model: this.defaultModel,
         messages,
-        temperature: 0.8,
-        max_tokens: 1000
+        temperature: 0.8
       });
 
       const aiResponse = response.data;
