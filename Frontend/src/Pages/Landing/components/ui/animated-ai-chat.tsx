@@ -2,7 +2,12 @@
 
 import { useEffect, useRef, useCallback, useTransition } from "react";
 import { useState } from "react";
+
 import { NavLink, useNavigate } from "react-router-dom";
+import { generateAnimation } from '@/services/api_chat';
+
+import { useCodeStore } from '@/codeStore';
+
 import { cn } from "@/Pages/Landing/lib/utils";
 import {
     ImageIcon,
@@ -259,19 +264,33 @@ export function AnimatedAIChat() {
         }
     };
 
-    const handleSendMessage = () => {
+
+    const handleSendMessage = async () => {
         if (value.trim()) {
-            startTransition(() => {
-                setIsTyping(true);
-                setTimeout(() => {
-                    setIsTyping(false);
+            try {
+                startTransition(() => {
+                    setIsTyping(true);
+                });
+
+                const response = await generateAnimation(value.trim());
+                
+                if (response.success && response.data) {
+                    // Update global state instead of localStorage
+                    useCodeStore.getState().setCode(response.data.code);
+                    useCodeStore.getState().setExplanation(response.data.explanation);
                     setValue("");
                     adjustHeight(true);
                     navigate("/dashboard");
-                }, 3000);
-            });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Handle error (show toast or error message)
+            } finally {
+                setIsTyping(false);
+            }
         }
     };
+
 
     const handleAttachFile = () => {
         const mockFileName = `file-${Math.floor(Math.random() * 1000)}.pdf`;
@@ -525,26 +544,6 @@ export function AnimatedAIChat() {
                 </motion.div>
             </div>
 
-            <AnimatePresence>
-                {isTyping && (
-                    <motion.div 
-                        className="fixed bottom-8 mx-auto transform -translate-x-1/2 backdrop-blur-2xl bg-white/[0.02] rounded-full px-4 py-2 shadow-lg border border-white/[0.05]"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-7 rounded-full bg-white/[0.05] flex items-center justify-center text-center">
-                                <span className="text-xs font-medium text-white/90 mb-0.5">zap</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-white/70">
-                                <span>Thinking</span>
-                                <TypingDots />
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
             {inputFocused && (
                 <motion.div 

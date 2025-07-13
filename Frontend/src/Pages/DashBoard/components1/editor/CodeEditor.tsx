@@ -5,6 +5,7 @@ import { FileExplorer } from './FileExplorer';
 import { CodeDisplay } from './CodeDisplay';
 import { StatusBar } from './StatusBar';
 import { CodeFile } from '../../types';
+import { useCodeStore } from '@/codeStore'; 
 
 interface CodeEditorProps {
   files: CodeFile[];
@@ -27,6 +28,31 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   onDownloadCode,
   onNewFile
 }) => {
+  const { code } = useCodeStore(); 
+  
+  const p5Template = `
+      function setup() {
+        createCanvas(400, 400);
+      }
+      
+      function draw() {
+        background(220);
+      }`;
+  
+  const handleNewFile = () => {
+  const newFile = {
+    id: Date.now().toString(),
+    name: 'Sketch.tsx',
+    language: "typescript" as "typescript",
+    content: code || p5Template,
+  };
+    
+    if (onFileUpdate) {
+      onFileUpdate(newFile);
+    }
+  };
+
+
   const handleCopyCode = () => {
     navigator.clipboard.writeText(activeFile.content);
     if (onCopyCode) onCopyCode();
@@ -68,7 +94,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           files={files}
           activeFile={activeFile}
           onFileSelect={onFileSelect}
-          onNewFile={onNewFile}
+          onNewFile={handleNewFile}
           defaultWidth={250}
           minWidth={200}
           maxWidth={400}

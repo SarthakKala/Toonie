@@ -1,10 +1,12 @@
-  import React, { useState } from "react";
+  import React, { useState,useEffect } from "react";
   import { Code, Video, Play, Download, Settings, Monitor } from "lucide-react";
   import { CodeEditor } from "./CodeEditor";
   import { VideoEditor } from "../video/VideoEditor";
   import { CurrentClipPreview } from "../preview/CurrentClipPreview";
   import { VideoClip, EditorMode } from "../../types/video";
   import { CodeFile } from "../../types";
+
+  import { useCodeStore } from '@/codeStore';
   
   interface TabbedEditorProps {
     // Code Editor Props
@@ -39,7 +41,54 @@
     onMoveToVideoEditor,
   }) => {
     const [editorMode, setEditorMode] = useState<EditorMode>("code");
-  
+
+     // Get generated code from store
+    const { code, explanation } = useCodeStore();
+
+    useEffect(() => {
+      if (code && onFileUpdate && activeFile.name === 'Sketch.tsx') {
+        const existingCode = activeFile.content;
+        
+        const sketchMatch = existingCode.indexOf('const sketch = (p: p5) => {');
+        
+        if (sketchMatch !== -1) {
+          const newContent = existingCode.replace(
+            '        // Replace this with your custom animation code\n      };',
+            `        p.setup = () => {
+              p.createCanvas(800, 600);
+            };
+            
+            p.draw = () => {
+              p.background(220);
+              ${code}
+            };
+          `
+          );
+
+          const updatedFile = {
+            ...activeFile,
+            content: newContent
+          };
+          
+          onFileUpdate(updatedFile);
+        }
+      }
+    }, [code, activeFile, onFileUpdate]);
+
+    
+    const handleNewFile = () => {
+      const newFile = {
+        id: Date.now().toString(),
+        name: 'Sketch.tsx',
+        language: 'typescript',
+        content: code || '// Your p5.js animation code here\n',
+      };
+      
+      if (onFileUpdate) {
+        onFileUpdate(newFile);
+      }
+    };
+
     const handleMoveToVideoEditor = () => {
       setEditorMode("video");
       if (onMoveToVideoEditor) {
@@ -155,6 +204,7 @@
         {/* Editor Content */}
         <div className="flex-1 overflow-hidden">
           {editorMode === "code" && (
+          <>
             <CodeEditor
               files={files}
               activeFile={activeFile}
@@ -165,7 +215,14 @@
                 console.log("Create new file");
               }}
             />
-          )}
+            {explanation && (
+              <div className="border-t border-gray-600 bg-gray-800 p-4">
+                <h3 className="text-sm font-medium text-white mb-2">AI Explanation</h3>
+                <p className="text-sm text-gray-300">{explanation}</p>
+              </div>
+            )}
+          </>
+        )}
           
           {editorMode === "preview" && (
             <CurrentClipPreview

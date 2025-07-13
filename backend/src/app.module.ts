@@ -4,8 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 import { AIModule } from './AI/ai.module';
 import { HealthController } from './check/health.controller';
 
+
 @Module({
-  imports: [
+  imports:[
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',

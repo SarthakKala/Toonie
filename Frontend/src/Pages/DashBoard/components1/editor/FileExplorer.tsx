@@ -83,12 +83,8 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       case 'ts':
       case 'tsx':
         return '📘';
-      case 'css':
-        return '🎨';
-      case 'html':
-        return '🌐';
-      case 'json':
-        return '📋';
+      case 'txt':
+        return '📄';
       default:
         return '📄';
     }

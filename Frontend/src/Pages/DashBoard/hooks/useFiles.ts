@@ -4,64 +4,65 @@ import { CodeFile } from '../types';
 const DEFAULT_FILES: CodeFile[] = [
   {
     id: '1',
-    name: 'App.tsx',
+    name: 'Sketch.tsx',
     language: 'typescript',
-    content: `import React from 'react';
-import './App.css';
+    content: 
+`import React, { useRef, useEffect } from "react";
+import p5 from "p5";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to your React App</h1>
-        <p>Start building something amazing!</p>
-      </header>
-    </div>
-  );
-}
+const Sketch: React.FC = () => {
+  const sketchRef = useRef<HTMLDivElement | null>(null);
 
-export default App;`
+  useEffect(() => {
+    const sketch = (p: p5) => {
+        // Replace this with your custom animation code
+      };
+    };
+
+    const myP5 = new p5(sketch, sketchRef.current!);
+
+    return () => {
+      myP5.remove();
+    };
+  }, []);
+
+  return <div ref={sketchRef}></div>;
+};
+
+export default Sketch;`
   },
+
+
   {
     id: '2',
-    name: 'components/Header.tsx',
+    name: 'main.tsx',
     language: 'typescript',
-    content: `import React from 'react';
+    content: 
+`import React from "react";
+import ReactDOM from "react-dom/client";
+import Sketch from "./Sketch";
 
-interface HeaderProps {
-  title: string;
-}
-
-const Header: React.FC<HeaderProps> = ({ title }) => {
+const App: React.FC = () => {
   return (
-    <header className="header">
-      <h1>{title}</h1>
-    </header>
+    <div style={{ textAlign: "center", marginTop: "2rem" }}>
+      <h1>My p5.js Sketch</h1>
+      <Sketch />
+    </div>
   );
 };
 
-export default Header;`
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+root.render(<App />);`
   },
+
+
   {
     id: '3',
-    name: 'styles/main.css',
-    language: 'css',
-    content: `/* Main styles */
-.App {
-  text-align: center;
-}
-
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
-}
-
-.header {
-  padding: 1rem;
-  background: #f0f0f0;
-  border-bottom: 1px solid #ddd;
-}`
+    name: 'instructions.txt',
+    language: 'txt',
+    content:
+`Welcome to the project!
+This will contain all the instructions you need to get started.`
   }
 ];
 
