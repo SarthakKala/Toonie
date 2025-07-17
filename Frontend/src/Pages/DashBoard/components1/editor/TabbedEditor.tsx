@@ -65,15 +65,19 @@
           `
           );
 
-          const updatedFile = {
-            ...activeFile,
-            content: newContent
-          };
-          
-          onFileUpdate(updatedFile);
+          // ✅ Avoid update loop
+          if (newContent !== existingCode) {
+            const updatedFile = {
+              ...activeFile,
+              content: newContent
+            };
+            
+            onFileUpdate(updatedFile);
+          }
         }
       }
     }, [code, activeFile, onFileUpdate]);
+
 
     
     const handleNewFile = () => {

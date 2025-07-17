@@ -47,7 +47,7 @@ function App() {
       files={files.files}
       activeFile={files.activeFile}
       onFileSelect={(file) => {
-        const selected = files.files.find(f => f.name === file.name && f.content === file.content);
+        const selected = files.files.find(f => f.name === file.name);
         if (selected) {
           files.setActiveFile(selected);
         }
