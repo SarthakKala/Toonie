@@ -100,8 +100,8 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
       <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-700">
         <canvas
           ref={canvasRef}
-          width={800}
-          height={600}
+          width={600}
+          height={450}
           className="max-w-full max-h-full"
         />
         

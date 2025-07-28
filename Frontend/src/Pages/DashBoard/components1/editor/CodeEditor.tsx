@@ -28,7 +28,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   onDownloadCode,
   onNewFile
 }) => {
-  const { code } = useCodeStore(); 
+  const { code } = useCodeStore(state => state.code); 
   
   const p5Template = `
       function setup() {

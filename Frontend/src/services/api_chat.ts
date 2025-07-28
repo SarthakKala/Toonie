@@ -10,8 +10,8 @@ export const generateAnimation = async (prompt: string) => {
       body: JSON.stringify({
         prompt,
         context: {
-          width: 400,
-          height: 300,
+          width: 600,
+          height: 450,
           duration: 5,
           style: 'modern'
         }
