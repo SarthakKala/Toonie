@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { MessageCircle, Settings } from 'lucide-react';
 import { MessageBubble } from './MessageBubble';
 import { MessageInput } from './MessageInput';
 import { Message } from '../../types';
+import { MessageLoading } from '@/Pages/Landing/components/ui/message-loading';
 
 interface ChatPanelProps {
   messages: Message[];
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, isCommand?: boolean) => void;
   isLoading?: boolean;
 }
 
@@ -15,6 +16,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onSendMessage,
   isLoading = false
 }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+  
   return (
     <div className="w-full flex flex-col h-full">
       {/* Chat Header */}
@@ -23,7 +31,12 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           <MessageCircle className="w-5 h-5" style={{ color: '#FAF9F6' }} />
           <h2 className="font-semibold" style={{ color: '#FAF9F6' }}>AI Assistant</h2>
         </div>
-        <Settings className="w-5 h-5 cursor-pointer transition-colors" style={{ color: '#9CA3AF' }} />
+        <div className="flex items-center space-x-2">
+          <div className="text-xs text-gray-400">
+            Use /animate to create animations
+          </div>
+          <Settings className="w-5 h-5 cursor-pointer transition-colors" style={{ color: '#9CA3AF' }} />
+        </div>
       </div>
 
       {/* Messages Area */}
@@ -34,14 +47,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         {isLoading && (
           <div className="flex justify-start">
             <div className="rounded-lg px-4 py-2" style={{ backgroundColor: '#000000', color: '#FAF9F6' }}>
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="flex items-center space-x-2">
+                <MessageLoading />
+                <span className="text-sm">Generating response...</span>
               </div>
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       <MessageInput onSendMessage={onSendMessage} disabled={isLoading} />

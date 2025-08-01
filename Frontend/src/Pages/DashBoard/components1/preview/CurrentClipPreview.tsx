@@ -1,19 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import { Download, ArrowRight, Settings, Maximize, X } from 'lucide-react';
+import { Download, ArrowRight, Settings, Maximize, X, Loader } from 'lucide-react';
 import { CodeFile } from '../../types';
-import P5CodePreview from "./P5CodePreview";
+import P5CodePreview from "./p5CodePreview";
 import { useCodeStore } from "@/codeStore";
 
 interface CurrentClipPreviewProps {
   activeFile: CodeFile;
   onExportClip: () => void;
   onMoveToVideoEditor: () => void;
+  isLoading?: boolean;
 }
 
 export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
   activeFile,
   onExportClip,
-  onMoveToVideoEditor
+  onMoveToVideoEditor,
+  isLoading = false
 }) => {
   const code = useCodeStore(state => state.code);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -64,23 +66,30 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
 
       {/* Preview Area */}
       <div className="flex-1 flex items-center justify-center p-4 bg-black">
-        <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-700">
-          <P5CodePreview code={code} />
-          {/* Overlay Controls */}
-          <div className="absolute top-2 right-2 flex space-x-1 z-10">
-            <button
-              className="p-1.5 bg-black bg-opacity-50 text-white rounded hover:bg-opacity-75 transition-colors"
-              onClick={() => setIsMaximized(true)}
-              title="Maximize"
-            >
-              <Maximize className="w-3 h-3" />
-            </button>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <Loader className="w-10 h-10 text-white animate-spin" />
+            <p className="text-white text-sm">Generating animation...</p>
           </div>
-          {/* Resolution Info */}
-          <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-            600x450
+        ) : (
+          <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-700">
+            <P5CodePreview code={code} />
+            {/* Overlay Controls */}
+            <div className="absolute top-2 right-2 flex space-x-1 z-10">
+              <button
+                className="p-1.5 bg-black bg-opacity-50 text-white rounded hover:bg-opacity-75 transition-colors"
+                onClick={() => setIsMaximized(true)}
+                title="Maximize"
+              >
+                <Maximize className="w-3 h-3" />
+              </button>
+            </div>
+            {/* Resolution Info */}
+            <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+              600x450
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Fullscreen Modal (appears when maximized) */}

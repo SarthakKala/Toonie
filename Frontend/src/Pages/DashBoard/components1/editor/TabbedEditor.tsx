@@ -25,6 +25,9 @@
     // Preview Props
     onExportClip?: () => void;
     onMoveToVideoEditor?: () => void;
+
+    // AI integration
+    isGenerating?: boolean; // Add this prop for loading state
   }
   
   export const TabbedEditor: React.FC<TabbedEditorProps> = ({
@@ -39,6 +42,7 @@
     onExport,
     onExportClip,
     onMoveToVideoEditor,
+    isGenerating = false, 
   }) => {
     const [editorMode, setEditorMode] = useState<EditorMode>("code");
 
@@ -208,31 +212,38 @@
         {/* Editor Content */}
         <div className="flex-1 overflow-hidden">
           {editorMode === "code" && (
-          <>
-            <CodeEditor
-              files={files}
-              activeFile={activeFile}
-              onFileSelect={onFileSelect}
-              onFileUpdate={onFileUpdate}
-              onRunCode={onRunCode}
-              onNewFile={() => {
-                console.log("Create new file");
-              }}
-            />
-            {explanation && (
-              <div className="border-t border-gray-600 bg-gray-800 p-4">
-                <h3 className="text-sm font-medium text-white mb-2">AI Explanation</h3>
-                <p className="text-sm text-gray-300">{explanation}</p>
-              </div>
-            )}
-          </>
-        )}
+            <>
+              {isGenerating && (
+                <div className="absolute top-4 right-4 z-10 bg-blue-600 text-white px-3 py-1 rounded-md text-sm flex items-center space-x-2">
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  <span>Generating code...</span>
+                </div>
+              )}
+              <CodeEditor
+                files={files}
+                activeFile={activeFile}
+                onFileSelect={onFileSelect}
+                onFileUpdate={onFileUpdate}
+                onRunCode={onRunCode}
+                onNewFile={() => {
+                  console.log("Create new file");
+                }}
+              />
+              {explanation && (
+                <div className="border-t border-gray-600 bg-gray-800 p-4">
+                  <h3 className="text-sm font-medium text-white mb-2">AI Explanation</h3>
+                  <p className="text-sm text-gray-300">{explanation}</p>
+                </div>
+              )}
+            </>
+          )}
           
           {editorMode === "preview" && (
             <CurrentClipPreview
               activeFile={activeFile}
               onExportClip={onExportClip || (() => console.log("Export clip"))}
               onMoveToVideoEditor={handleMoveToVideoEditor}
+              isLoading={isGenerating} // Pass loading state
             />
           )}
           

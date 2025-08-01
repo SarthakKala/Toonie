@@ -1,4 +1,9 @@
 import React, { useEffect, useRef } from "react";
+declare global {
+  interface Window {
+    p5?: any;
+  }
+}
 
 interface P5CodePreviewProps {
   code: string;

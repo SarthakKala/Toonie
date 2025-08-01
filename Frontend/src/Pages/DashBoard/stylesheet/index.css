@@ -60,3 +60,54 @@ html {
 .text-gray-300 {
   color: #D1D5DB !important;
 }
+
+/* Markdown styling for chat bubbles */
+.markdown-bubble {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.markdown-bubble h1, 
+.markdown-bubble h2, 
+.markdown-bubble h3 {
+  color: #ffffff;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.3rem;
+}
+
+.markdown-bubble code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.markdown-bubble pre {
+  max-width: 100%;
+}
+
+.markdown-bubble a {
+  text-decoration: underline;
+}
+
+.markdown-bubble ul, 
+.markdown-bubble ol {
+  margin-left: 0.5rem;
+}
+
+.markdown-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-bubble blockquote {
+  border-left: 3px solid #6E56CF;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #bebebe;
+}
+
+/* Improved code block styling */
+.markdown-bubble pre code {
+  display: block;
+  padding: 0.5rem;
+  line-height: 1.4;
+}

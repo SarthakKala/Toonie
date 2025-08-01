@@ -1,65 +1,91 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Message } from '../types';
-import { aiService } from '../services/aiService';
+import { chatWithAI, generateAnimation } from '@/services/api_chat';
+import { useCodeStore } from '@/codeStore';
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      type: 'ai',
-      content: 'Hello! I\'m your AI coding assistant. I can help you write, debug, and explain code. What would you like to build today?',
-      timestamp: new Date()
+      id: '0',
+      role: 'system',
+      content: 'Hi! I\'m your AI assistant. I can help you with p5.js animations and coding questions. Type /animate or /generate followed by your idea to create animations!'
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const setCode = useCodeStore(state => state.setCode);
+  const setExplanation = useCodeStore(state => state.setExplanation);
 
-  const sendMessage = useCallback(async (content: string) => {
-    const userMessage: Message = {
+  const addMessage = (role: 'user' | 'system' | 'assistant', content: string) => {
+    const newMessage: Message = {
       id: Date.now().toString(),
-      type: 'user',
-      content,
-      timestamp: new Date()
+      role,
+      content
     };
+    setMessages(prev => [...prev, newMessage]);
+    return newMessage;
+  };
 
-    setMessages(prev => [...prev, userMessage]);
+  const sendMessage = async (content: string, isCommand = false) => {
+    // Add user message to chat
+    addMessage('user', content);
+    
     setIsLoading(true);
-
+    
     try {
-      const aiResponse = await aiService.sendMessage(content);
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: aiResponse,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiMessage]);
+      if (isCommand) {
+        // Handle animation generation command
+        const response = await generateAnimation(content);
+        
+        if (response.success && response.data) {
+          // Update code store with generated animation
+          setCode(response.data.code || '');
+          setExplanation(response.data.explanation || '');
+          
+          // Add system message about code generation
+          addMessage('system', 'Code editor updated with new animation!');
+          
+          // Add explanation as AI message
+          addMessage('assistant', response.data.explanation || 'Animation generated successfully!');
+        } else {
+          addMessage('assistant', 'I had trouble creating that animation. Please try again with a different prompt.');
+        }
+      } else {
+        // Check if message is p5.js or animation related
+        if (isAnimationRelated(content)) {
+          const response = await chatWithAI(content);
+          if (response.success && response.data) {
+            addMessage('assistant', response.data.response || 'I couldn\'t process that request.');
+          } else {
+            addMessage('assistant', 'Sorry, I encountered an error processing your request.');
+          }
+        } else {
+          addMessage('assistant', 'Sorry, I can only help with p5.js animations and coding questions. Please ask something related to animations or creative coding!');
+        }
+      }
     } catch (error) {
-      console.error('Error sending message:', error);
-      const errorMessage: Message = {
-        id: (Date.now() + 2).toString(),
-        type: 'ai',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      console.error('Error in chat:', error);
+      addMessage('assistant', 'Sorry, there was an error processing your request. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
-  const clearMessages = useCallback(() => {
-    setMessages([{
-      id: '1',
-      type: 'ai',
-      content: 'Hello! I\'m your AI coding assistant. How can I help you today?',
-      timestamp: new Date()
-    }]);
-  }, []);
+  // Simple check if the message is related to p5.js or animations
+  const isAnimationRelated = (message: string): boolean => {
+    const keywords = [
+      'animation', 'animate', 'p5', 'p5.js', 'javascript', 'js', 'code', 'canvas',
+      'draw', 'setup', 'sketch', 'creative', 'coding', 'function', 'programming',
+      'loop', 'framerate', 'color', 'shape', 'motion', 'preload', 'particle',
+      'interactive', 'visual', '2d', 'graphics', 'art', 'creative'
+    ];
+    
+    const lowerMessage = message.toLowerCase();
+    return keywords.some(keyword => lowerMessage.includes(keyword));
+  };
 
   return {
     messages,
     sendMessage,
-    clearMessages,
     isLoading
   };
 };

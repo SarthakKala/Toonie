@@ -1,5 +1,5 @@
 // Frontend/src/App.tsx
-import React from 'react';
+import React ,{useState} from 'react';
 import { ResizableLayout } from './components1/layout/ResizableLayout';
 import { ChatPanel } from './components1/chat/ChatPanel';
 import { TabbedEditor } from './components1/editor/TabbedEditor';
@@ -10,6 +10,20 @@ import './stylesheet/index.css'
 
 function App() {
   const { chat, files, actions, video } = useApp();
+  const [isGenerating, setIsGenerating] = useState(false);
+
+
+  // Custom message handler to track loading state for previews
+  const handleSendMessage = async (content: string, isCommand = false) => {
+    if (isCommand) {
+      setIsGenerating(true);
+      await chat.sendMessage(content, true);
+      setIsGenerating(false);
+    } else {
+      await chat.sendMessage(content, false);
+    }
+  };
+
 
   const handleExportClip = () => {
     console.log('Exporting current clip:', files.activeFile.content);
@@ -36,7 +50,7 @@ function App() {
   const chatPanel = (
     <ChatPanel 
       messages={chat.messages} 
-      onSendMessage={chat.sendMessage}
+      onSendMessage={handleSendMessage}
       isLoading={chat.isLoading}
     />
   );
@@ -64,6 +78,7 @@ function App() {
       // Preview Props
       onExportClip={handleExportClip}
       onMoveToVideoEditor={handleMoveToVideoEditor}
+      isGenerating={isGenerating} // Add this prop to pass the loading state
     />
   );
 

@@ -2,23 +2,27 @@ import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 
 interface MessageInputProps {
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, isCommand: boolean) => void;
   disabled?: boolean;
 }
 
-export const MessageInput: React.FC<MessageInputProps> = ({ 
-  onSendMessage, 
-  disabled = false 
+export const MessageInput: React.FC<MessageInputProps> = ({
+  onSendMessage,
+  disabled = false
 }) => {
   const [inputMessage, setInputMessage] = useState('');
-
+  
   const handleSendMessage = () => {
-    if (!inputMessage.trim() || disabled) return;
-    onSendMessage(inputMessage);
-    setInputMessage('');
+    if (inputMessage.trim()) {
+      
+      const isCommand = inputMessage.trim().startsWith('/animate') || inputMessage.trim().startsWith('/generate');
+      
+      onSendMessage(inputMessage, isCommand);
+      setInputMessage('');
+    }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -26,13 +30,13 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="p-4 border-t border-gray-600" style={{ backgroundColor: '#161616' }}>
+    <div className="p-4 border-t border-gray-600" style={{ backgroundColor: '#000000' }}>
       <div className="flex space-x-2">
         <textarea
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder="Describe what you want to build..."
+          onKeyDown={handleKeyDown}
+          placeholder="Ask a question or type /animate [your idea]..."
           className="flex-1 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white resize-none"
           style={{ 
             backgroundColor: '#000000',
