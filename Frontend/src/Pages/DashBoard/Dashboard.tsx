@@ -1,5 +1,5 @@
 // Frontend/src/App.tsx
-import React ,{useState} from 'react';
+import React ,{useState, useEffect} from 'react';
 import { ResizableLayout } from './components1/layout/ResizableLayout';
 import { ChatPanel } from './components1/chat/ChatPanel';
 import { TabbedEditor } from './components1/editor/TabbedEditor';
@@ -12,7 +12,6 @@ function App() {
   const { chat, files, actions, video } = useApp();
   const [isGenerating, setIsGenerating] = useState(false);
 
-
   // Custom message handler to track loading state for previews
   const handleSendMessage = async (content: string, isCommand = false) => {
     if (isCommand) {
@@ -24,16 +23,24 @@ function App() {
     }
   };
 
-
-  const handleExportClip = () => {
-    console.log('Exporting current clip:', files.activeFile.content);
-    // Implementation for exporting the current animation as a standalone clip
-    alert('Clip exported successfully! This would save your animation as a video file.');
+  const handleExportClip = async (clipData: { blob: Blob; name: string; duration: number }) => {
+    console.log('Exporting clip:', clipData);
+    
+    // For now, just trigger download - we'll enhance this in Step 2
+    const url = URL.createObjectURL(clipData.blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${clipData.name}.webm`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert(`Clip "${clipData.name}" exported successfully!`);
   };
 
   const handleMoveToVideoEditor = () => {
     console.log('Moving current clip to video editor');
-    // Implementation for adding the current animation to the video editor timeline
     const newClip = {
       id: Date.now().toString(),
       name: `${files.activeFile.name} Animation`,
@@ -81,6 +88,25 @@ function App() {
       isGenerating={isGenerating} // Add this prop to pass the loading state
     />
   );
+
+  useEffect(() => {
+    // Ensure p5.js is loaded
+    const checkP5 = () => {
+      if (!window.p5) {
+        console.log('Loading p5.js...');
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js';
+        script.onload = () => {
+          console.log('P5.js loaded successfully');
+        };
+        document.head.appendChild(script);
+      } else {
+        console.log('P5.js already loaded');
+      }
+    };
+    
+    checkP5();
+  }, []);
 
   return (
     <ResizableLayout 

@@ -1,4 +1,4 @@
-  import React, { useState,useEffect } from "react";
+import React, { useState,useEffect } from "react";
   import { Code, Video, Play, Download, Settings, Monitor } from "lucide-react";
   import { CodeEditor } from "./CodeEditor";
   import { VideoEditor } from "../video/VideoEditor";
@@ -23,7 +23,7 @@
     onExport: () => void;
     
     // Preview Props
-    onExportClip?: () => void;
+    onExportClip: (clipData: { blob: Blob; name: string; duration: number }) => Promise<void>;
     onMoveToVideoEditor?: () => void;
 
     // AI integration
