@@ -5,12 +5,30 @@ import { ChatPanel } from './components1/chat/ChatPanel';
 import { TabbedEditor } from './components1/editor/TabbedEditor';
 // Update the import path below to the correct location of useApp, for example:
 import { useApp } from './hooks/useApp';
+import { clipStorage } from "../../utils/clipStorage";
 import './stylesheet/index.css'
 // If the file does not exist, create 'useApp.ts' in the correct folder and export the hook.
 
 function App() {
   const { chat, files, actions, video } = useApp();
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Initialize IndexedDB on app start
+  useEffect(() => {
+    const initStorage = async () => {
+      try {
+        await clipStorage.init();
+        console.log('✅ Clip storage initialized successfully');
+        
+        const info = await clipStorage.getStorageInfo();
+        console.log('📊 Storage info:', info);
+      } catch (error) {
+        console.error('❌ Failed to initialize clip storage:', error);
+      }
+    };
+    
+    initStorage();
+  }, []);
 
   // Custom message handler to track loading state for previews
   const handleSendMessage = async (content: string, isCommand = false) => {
@@ -25,33 +43,12 @@ function App() {
 
   const handleExportClip = async (clipData: { blob: Blob; name: string; duration: number }) => {
     console.log('Exporting clip:', clipData);
-    
-    // For now, just trigger download - we'll enhance this in Step 2
-    const url = URL.createObjectURL(clipData.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${clipData.name}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    alert(`Clip "${clipData.name}" exported successfully!`);
+    // This will be called by the Download button workflow
   };
 
   const handleMoveToVideoEditor = () => {
-    console.log('Moving current clip to video editor');
-    const newClip = {
-      id: Date.now().toString(),
-      name: `${files.activeFile.name} Animation`,
-      duration: 5.0,
-      startTime: 0,
-      endTime: 5,
-      type: 'animation' as const,
-      content: files.activeFile.content
-    };
-    video.updateClip(newClip);
-    alert('Clip added to video editor timeline!');
+    console.log('Moving to video editor');
+    // This will be called by the To Video Editor button workflow
   };
 
   const chatPanel = (

@@ -97,10 +97,16 @@ import React, { useState,useEffect } from "react";
       }
     };
 
-    const handleMoveToVideoEditor = () => {
+    const handleMoveToVideoEditor = (clipId?: string) => {
       setEditorMode("video");
       if (onMoveToVideoEditor) {
         onMoveToVideoEditor();
+      }
+      
+      // If a clipId is provided, we can potentially select it in the media library
+      if (clipId) {
+        console.log('New clip added to video editor:', clipId);
+        // TODO: In Step 3, we'll implement selecting the new clip in MediaLibrary
       }
     };
   
@@ -243,7 +249,7 @@ import React, { useState,useEffect } from "react";
               activeFile={activeFile}
               onExportClip={onExportClip || (() => console.log("Export clip"))}
               onMoveToVideoEditor={handleMoveToVideoEditor}
-              isLoading={isGenerating} // Pass loading state
+              isLoading={isGenerating}
             />
           )}
           
