@@ -260,12 +260,26 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
 
           {/* Timeline */}
           <div className="h-1/2">
-            <Timeline clips={timelineClips} onRemoveClip={(clipId) => {
-              setTimelineClips(prev => prev.filter(id => id !== clipId));
-              // Reset playback when timeline changes
-              setCurrentTime(0);
-              setIsPlaying(false);
-            }} />
+            <Timeline 
+              clips={timelineClips} 
+              onRemoveClip={(clipId) => {
+                setTimelineClips(prev => prev.filter(id => id !== clipId));
+                setCurrentTime(0);
+                setIsPlaying(false);
+              }}
+              onReorderClips={(newOrder) => {
+                setTimelineClips(newOrder);
+                setCurrentTime(0);
+                setIsPlaying(false);
+              }}
+              onSeekTo={(time) => {
+                setCurrentTime(time);
+                setIsPlaying(false);
+              }}
+              currentTime={currentTime}
+              totalDuration={totalDuration}
+              isPlaying={isPlaying}
+            />
           </div>
         </div>
       </div>
