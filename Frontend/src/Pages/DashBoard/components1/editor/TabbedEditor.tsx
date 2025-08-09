@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
   import { Code, Video, Play, Download, Settings, Monitor } from "lucide-react";
   import { CodeEditor } from "./CodeEditor";
-  import { VideoEditor } from "../video/VideoEditor";
+  import { VideoEditor } from '../video/VideoEditor';
   import { CurrentClipPreview } from "../preview/CurrentClipPreview";
   import { VideoClip, EditorMode } from "../../types/video";
   import { CodeFile } from "../../types";
@@ -254,12 +254,7 @@ import React, { useState,useEffect } from "react";
           )}
           
           {editorMode === "video" && (
-            <VideoEditor
-              clips={clips}
-              onClipSelect={onClipSelect}
-              onClipUpdate={onClipUpdate}
-              onExport={onExport}
-            />
+            <VideoEditor />
           )}
         </div>
       </div>

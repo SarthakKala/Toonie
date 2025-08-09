@@ -1,164 +1,132 @@
-import React, { useRef } from 'react';
-import { VideoClip } from '../../types/video';
-
+import React, { useState, useEffect } from 'react';
+import { X, Play, Pause } from 'lucide-react';
+import { clipStorage, StoredClip } from "../../../../utils/clipStorage";
 interface TimelineProps {
-  clips: VideoClip[];
-  currentTime: number;
-  selectedClip: VideoClip | null;
-  zoom: number;
-  onClipSelect: (clip: VideoClip) => void;
-  onClipUpdate: (clip: VideoClip) => void;
-  onTimelineClick: (time: number) => void;
+  clips: string[]; // Array of clip IDs
+  onRemoveClip: (clipId: string) => void;
 }
 
-export const Timeline: React.FC<TimelineProps> = ({
-  clips,
-  currentTime,
-  selectedClip,
-  zoom,
-  onClipSelect,
-  onClipUpdate,
-  onTimelineClick
-}) => {
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const pixelsPerSecond = 50 * zoom;
-  const totalDuration = 60; // 60 seconds timeline
+export const Timeline: React.FC<TimelineProps> = ({ clips, onRemoveClip }) => {
+  const [clipData, setClipData] = useState<StoredClip[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleTimelineClick = (e: React.MouseEvent) => {
-    if (!timelineRef.current) return;
-    
-    const rect = timelineRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left - 80; // Account for track labels
-    const time = Math.max(0, x / pixelsPerSecond);
-    onTimelineClick(time);
-  };
+  // Load clip metadata when clip IDs change
+  useEffect(() => {
+    const loadClipData = async () => {
+      if (clips.length === 0) {
+        setClipData([]);
+        return;
+      }
 
-  const renderTimeMarks = () => {
-    const marks = [];
-    const interval = zoom > 2 ? 1 : zoom > 1 ? 5 : 10;
-    
-    for (let i = 0; i <= totalDuration; i += interval) {
-      const x = i * pixelsPerSecond;
-      marks.push(
-        <div
-          key={i}
-          className="absolute top-0 h-8 border-l border-gray-600 text-xs text-gray-400 pl-1 flex items-center"
-          style={{ left: `${x}px` }}
-        >
-          {i > 0 && <span>{Math.floor(i / 60)}:{(i % 60).toString().padStart(2, '0')}</span>}
-        </div>
-      );
-    }
-    return marks;
-  };
+      setLoading(true);
+      try {
+        const promises = clips.map(async (clipId) => {
+          const clipInfo = await clipStorage.getClip(clipId);
+          return clipInfo?.metadata;
+        });
 
-  const renderClip = (clip: VideoClip, trackIndex: number) => {
-    const left = clip.startTime * pixelsPerSecond;
-    const width = (clip.endTime - clip.startTime) * pixelsPerSecond;
-    const isSelected = selectedClip?.id === clip.id;
-    
-    const colorMap = {
-      animation: 'bg-blue-600',
-      audio: 'bg-green-600',
-      text: 'bg-purple-600'
+        const results = await Promise.all(promises);
+        const validClips = results.filter((clip): clip is StoredClip => clip !== undefined);
+        setClipData(validClips);
+      } catch (error) {
+        console.error('Failed to load clip data for timeline:', error);
+        setClipData([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-      <div
-        key={clip.id}
-        className={`absolute h-10 rounded cursor-pointer border-2 transition-all
-          ${colorMap[clip.type]} ${isSelected ? 'border-white' : 'border-transparent'}
-          hover:opacity-80 flex items-center px-2 text-white text-xs font-medium`}
-        style={{
-          left: `${left}px`,
-          width: `${width}px`,
-          top: `${trackIndex * 50 + 40}px`
-        }}
-        onClick={() => onClipSelect(clip)}
-        title={`${clip.name} (${clip.duration.toFixed(2)}s)`}
-      >
-        <span className="truncate">{clip.name}</span>
-      </div>
-    );
-  };
-
-  // Group clips by tracks to avoid overlap
-  const tracks: VideoClip[][] = [];
-  clips.forEach(clip => {
-    let placed = false;
-    for (let i = 0; i < tracks.length; i++) {
-      const track = tracks[i];
-      const hasOverlap = track.some(existingClip => 
-        !(clip.endTime <= existingClip.startTime || clip.startTime >= existingClip.endTime)
-      );
-      if (!hasOverlap) {
-        track.push(clip);
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) {
-      tracks.push([clip]);
-    }
-  });
+    loadClipData();
+  }, [clips]);
 
   return (
-    <div className="h-full bg-gray-850 overflow-hidden">
+    <div className="h-full flex flex-col bg-gray-900">
       {/* Timeline Header */}
-      <div className="h-8 bg-gray-800 border-b border-gray-600 relative overflow-hidden">
-        <div className="absolute left-20 right-0 h-full">
-          <div 
-            className="relative h-full"
-            style={{ width: `${totalDuration * pixelsPerSecond}px` }}
-          >
-            {renderTimeMarks()}
-          </div>
+      <div className="h-10 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4">
+        <span className="text-sm font-medium text-white">Timeline</span>
+        <div className="flex items-center space-x-2">
+          <button className="p-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-xs">
+            <Play className="w-3 h-3" />
+          </button>
+          <span className="text-xs text-gray-400">
+            {clips.length} clip{clips.length !== 1 ? 's' : ''}
+          </span>
         </div>
       </div>
 
       {/* Timeline Content */}
-      <div 
-        ref={timelineRef}
-        className="flex-1 relative overflow-x-auto overflow-y-auto cursor-pointer"
-        onClick={handleTimelineClick}
-        style={{ height: 'calc(100% - 32px)' }}
-      >
-        <div 
-          className="relative"
-          style={{ 
-            width: `${80 + totalDuration * pixelsPerSecond}px`,
-            height: `${Math.max(150, tracks.length * 50 + 60)}px`
-          }}
-        >
-          {/* Track Labels */}
-          <div className="absolute left-0 top-0 w-20 h-full bg-gray-800 border-r border-gray-600 z-10">
-            {tracks.map((_, index) => (
-              <div
-                key={index}
-                className="h-10 flex items-center justify-center text-xs text-gray-400 border-b border-gray-700"
-                style={{ top: `${40 + index * 50}px`, position: 'absolute', width: '80px' }}
-              >
-                Track {index + 1}
-              </div>
-            ))}
+      <div className="flex-1 p-4">
+        {loading ? (
+          <div className="h-full flex items-center justify-center text-gray-400">
+            <p>Loading clips...</p>
           </div>
-
-          {/* Clips */}
-          <div className="absolute inset-0" style={{ left: '80px' }}>
-            {tracks.map((track, trackIndex) =>
-              track.map(clip => renderClip(clip, trackIndex))
-            )}
+        ) : clips.length === 0 ? (
+          <div className="h-full flex items-center justify-center text-gray-400">
+            <div className="text-center">
+              <p className="text-lg mb-2">Timeline is empty</p>
+              <p className="text-sm">Add clips from the Media Library to get started</p>
+            </div>
           </div>
-
-          {/* Playhead */}
-          <div
-            className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-20 pointer-events-none"
-            style={{ left: `${80 + currentTime * pixelsPerSecond}px` }}
-          >
-            <div className="absolute -top-1 -left-2 w-4 h-4 bg-red-500 transform rotate-45" />
+        ) : (
+          <div className="flex space-x-2 overflow-x-auto">
+            {clips.map((clipId, index) => {
+              const clipInfo = clipData.find(clip => clip.id === clipId);
+              
+              return (
+                <div key={`${clipId}-${index}`} className="relative flex-shrink-0">
+                  <div className="w-32 h-20 bg-gray-700 rounded border border-gray-600 overflow-hidden">
+                    {clipInfo?.thumbnail ? (
+                      <img 
+                        src={clipInfo.thumbnail} 
+                        alt={clipInfo.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-xs text-white">Clip {index + 1}</span>
+                      </div>
+                    )}
+                    
+                    {/* Clip Info Overlay */}
+                    {clipInfo && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 px-2 py-1">
+                        <div className="text-xs text-white truncate">{clipInfo.name}</div>
+                        <div className="text-xs text-gray-300">
+                          {Math.round(clipInfo.duration)}s
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => onRemoveClip(clipId)}
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-xs"
+                    title="Remove from timeline"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                  
+                  {/* Timeline Position Indicator */}
+                  <div className="absolute -bottom-6 left-0 right-0 text-center">
+                    <span className="text-xs text-gray-500">#{index + 1}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        )}
       </div>
+
+      {/* Timeline Footer with Total Duration */}
+      {clips.length > 0 && (
+        <div className="h-8 bg-gray-850 border-t border-gray-700 flex items-center justify-between px-4 text-xs text-gray-400">
+          <span>{clips.length} clips in timeline</span>
+          <span>
+            Total duration: {Math.round(clipData.reduce((total, clip) => total + clip.duration, 0))}s
+          </span>
+        </div>
+      )}
     </div>
   );
 };
