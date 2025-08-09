@@ -41,14 +41,15 @@ function App() {
     }
   };
 
-  const handleExportClip = async (clipData: { blob: Blob; name: string; duration: number }) => {
-    console.log('Exporting clip:', clipData);
-    // This will be called by the Download button workflow
+  const handleExportClip = async (clipId: string) => {
+    console.log('Clip exported with ID:', clipId);
+    // Optional: Show success notification or update UI
   };
 
   const handleMoveToVideoEditor = () => {
     console.log('Moving to video editor');
-    // This will be called by the To Video Editor button workflow
+    // Switch to video editor mode
+    // This might involve updating editorMode state if you have it
   };
 
   const chatPanel = (

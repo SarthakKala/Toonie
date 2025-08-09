@@ -3,13 +3,13 @@ import { Download, ArrowRight, Settings, Maximize, X, Loader, Video, Square } fr
 import { CodeFile } from '../../types';
 import P5CodePreview, { P5CodePreviewRef } from "./p5CodePreview";
 import { useCodeStore } from "@/codeStore";
-import { useVideoRecording } from '../../hooks/useVideoRecording';
-import { clipStorage, generateThumbnail } from "../../../../utils/clipStorage";
+import { useVideoRecording } from "../../hooks/useVideoRecording";
+import { clipStorage } from '../../../../utils/clipStorage';
 
 interface CurrentClipPreviewProps {
   activeFile: CodeFile;
-  onExportClip: (clipData: { blob: Blob; name: string; duration: number }) => void;
-  onMoveToVideoEditor: (clipId?: string) => void; // Pass clipId when moving to video editor
+  onExportClip: (clipId: string) => void; // Changed to return clip ID
+  onMoveToVideoEditor: () => void;
   isLoading?: boolean;
 }
 
@@ -39,109 +39,118 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
     };
   }, [isMaximized]);
 
-  // Record and Download directly
-  const handleRecordAndDownload = async () => {
-    const blob = await recordAnimation();
-    if (!blob) return;
-
-    // Generate clip name and download
-    const clipName = `${activeFile.name.replace('.tsx', '')}_animation`;
+  const handleRecord = async () => {
+    console.log('Record button clicked');
     
-    // Trigger download
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${clipName}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    alert(`✅ Animation downloaded as "${clipName}.webm"!`);
-  };
-
-  // Record and Move to Video Editor
-  const handleRecordAndMoveToVideoEditor = async () => {
-    const blob = await recordAnimation();
-    if (!blob) return;
-
-    setIsSaving(true);
+    const canvas = p5PreviewRef.current?.getCanvas();
+    console.log('Canvas from ref:', canvas);
     
+    if (!canvas) {
+      alert('Canvas not ready for recording. Please wait for the animation to load.');
+      return;
+    }
+    
+    // Additional canvas validation
+    if (canvas.width === 0 || canvas.height === 0) {
+      console.error('Canvas has invalid dimensions:', canvas.width, 'x', canvas.height);
+      alert('Canvas has invalid dimensions. Please refresh and try again.');
+      return;
+    }
+
     try {
-      console.log('Generating thumbnail...');
-      const thumbnail = await generateThumbnail(blob);
+      console.log('Restarting animation for clean recording...');
+      // Restart the animation for clean recording
+      p5PreviewRef.current?.restart();
       
-      console.log('Saving clip to IndexedDB...');
+      // Wait longer for the animation to initialize
+      console.log('Waiting for animation to initialize...');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Get canvas again after restart
+      const freshCanvas = p5PreviewRef.current?.getCanvas();
+      if (!freshCanvas) {
+        throw new Error('Canvas lost after restart');
+      }
+      
+      console.log('Starting recording with canvas:', freshCanvas);
+      const blob = await startRecording(freshCanvas, {
+        duration: recordingDuration * 1000,
+        frameRate: 30
+      });
+      
+      console.log('Recording completed, blob size:', blob.size);
+      
+      if (blob.size === 0) {
+        throw new Error('Recorded video has no content');
+      }
+      
+      // Save clip to IndexedDB
+      setIsSaving(true);
+      
       const clipName = `${activeFile.name.replace('.tsx', '')} Animation`;
       
       const clipId = await clipStorage.saveClip({
+        blob,
         name: clipName,
         duration: recordingDuration,
-        blob: blob,
-        thumbnail: thumbnail,
-        tags: ['p5js', 'animation'],
-        description: `Generated from ${activeFile.name}`
+        type: 'animation',
+        content: code
       });
       
       console.log('Clip saved with ID:', clipId);
       
-      // Move to video editor with the new clip
-      onMoveToVideoEditor(clipId);
+      // Call the export callback with clip ID
+      onExportClip(clipId);
       
-      alert(`✅ Clip "${clipName}" saved and added to video editor!`);
+      // Show success message
+      alert(`Recording completed! Clip "${clipName}" has been saved to your library. File size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
       
-    } catch (saveError) {
-      console.error('Failed to save clip:', saveError);
-      alert('Failed to save clip to library. Please try again.');
+    } catch (error) {
+      console.error('Recording failed:', error);
+      alert(`Recording failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Shared recording logic
-  const recordAnimation = async (): Promise<Blob | null> => {
+  const handleStopRecording = () => {
+    stopRecording();
+  };
+
+  const handleExportDownload = async () => {
+    // Option to directly download without saving
     const canvas = p5PreviewRef.current?.getCanvas();
     if (!canvas) {
-      alert('Canvas not ready for recording. Please wait for the animation to load.');
-      return null;
-    }
-    
-    if (canvas.width === 0 || canvas.height === 0) {
-      alert('Canvas has invalid dimensions. Please refresh and try again.');
-      return null;
+      alert('Canvas not ready for export.');
+      return;
     }
 
     try {
-      console.log('Restarting animation for clean recording...');
       p5PreviewRef.current?.restart();
-      
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const freshCanvas = p5PreviewRef.current?.getCanvas();
-      if (!freshCanvas) {
-        throw new Error('Canvas lost after restart');
-      }
+      if (!freshCanvas) throw new Error('Canvas lost after restart');
       
       const blob = await startRecording(freshCanvas, {
         duration: recordingDuration * 1000,
         frameRate: 30
       });
       
-      if (blob.size === 0) {
-        throw new Error('Recorded video has no content');
-      }
-      
-      return blob;
+      // Direct download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${activeFile.name.replace('.tsx', '')}_animation.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       
     } catch (error) {
-      console.error('Recording failed:', error);
-      alert(`Recording failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      return null;
+      console.error('Export failed:', error);
+      alert('Export failed. Please try again.');
     }
-  };
-
-  const handleStopRecording = () => {
-    stopRecording();
   };
   
   return (
@@ -152,19 +161,9 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
           <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
           <span className="text-sm font-medium text-white">Current Clip Preview</span>
           <span className="text-xs text-gray-400">({activeFile.name})</span>
-          {isRecording && (
-            <span className="text-xs text-orange-400">
-              Recording... {recordingProgress.toFixed(0)}%
-            </span>
-          )}
-          {isSaving && (
-            <span className="text-xs text-blue-400">
-              Saving clip...
-            </span>
-          )}
         </div>
         <div className="flex items-center space-x-2">
-          {/* Recording Duration Input */}
+          {/* Recording Controls */}
           <div className="flex items-center space-x-2 mr-2">
             <input
               type="number"
@@ -178,29 +177,26 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
             <span className="text-xs text-gray-400">sec</span>
           </div>
           
-          {/* Recording Controls */}
           {!isRecording ? (
             <>
-              {/* Record & Download Button */}
               <button
-                onClick={handleRecordAndDownload}
+                onClick={handleRecord}
+                className="flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded text-xs font-medium text-white transition-colors"
+                title="Record and Save to Library"
+                disabled={isLoading || isSaving}
+              >
+                <Video className="w-3 h-3" />
+                <span>{isSaving ? 'Saving...' : 'Record & Save'}</span>
+              </button>
+              
+              <button
+                onClick={handleExportDownload}
                 className="flex items-center space-x-1 px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded text-xs font-medium text-white transition-colors"
-                title="Record and Download"
+                title="Export as standalone file"
                 disabled={isLoading || isSaving}
               >
                 <Download className="w-3 h-3" />
-                <span>Download</span>
-              </button>
-
-              {/* Record & Move to Video Editor Button */}
-              <button
-                onClick={handleRecordAndMoveToVideoEditor}
-                className="flex items-center space-x-1 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 rounded text-xs font-medium text-white transition-colors"
-                title="Record and Move to Video Editor"
-                disabled={isLoading || isSaving}
-              >
-                <ArrowRight className="w-3 h-3" />
-                <span>{isSaving ? 'Saving...' : 'To Video Editor'}</span>
+                <span>Export</span>
               </button>
             </>
           ) : (
@@ -214,6 +210,14 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
             </button>
           )}
           
+          <button
+            onClick={onMoveToVideoEditor}
+            className="flex items-center space-x-1 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 rounded text-xs font-medium text-white transition-colors"
+            title="Move to Video Editor"
+          >
+            <ArrowRight className="w-3 h-3" />
+            <span>To Video Editor</span>
+          </button>
           <button className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors">
             <Settings className="w-4 h-4" />
           </button>
@@ -230,7 +234,17 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
         </div>
       )}
 
-      {/* Preview Area */}
+      {/* Saving Progress */}
+      {isSaving && (
+        <div className="h-6 bg-blue-800 flex items-center justify-center">
+          <div className="flex items-center space-x-2 text-white text-xs">
+            <Loader className="w-3 h-3 animate-spin" />
+            <span>Saving clip to library...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Preview Area - same as before */}
       <div className="flex-1 flex items-center justify-center p-4 bg-black">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center space-y-4">
@@ -267,11 +281,11 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
         )}
       </div>
 
-      {/* Fullscreen Modal */}
+      {/* Fullscreen Modal - same as before */}
       {isMaximized && (
         <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
           <div className="relative w-[90vw] h-[80vh] bg-black rounded-lg overflow-hidden border border-gray-700">
-            <P5CodePreview code={code} />
+            <P5CodePreview ref={p5PreviewRef} code={code} />
             <button
               className="absolute top-4 right-4 p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700"
               onClick={() => setIsMaximized(false)}
@@ -291,7 +305,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
         <span>Preview updates automatically when code changes</span>
         <div className="flex items-center space-x-4">
           <span>Quality: Preview</span>
-          <span>FPS: 60</span>
+          <span>FPS: 30</span>
         </div>
       </div>
     </div>
