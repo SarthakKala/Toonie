@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MediaLibrary } from './MediaLibrary';
 import { Timeline } from "./Timeline";
-import { clipStorage } from "../../../../utils/clipStorage";
+import { clipStorage } from "../../../../utils/ClipStorage";
 import { Play, Pause } from 'lucide-react';
 
 // Remove the old VideoEditorProps interface and create a simple one
@@ -177,8 +177,8 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
 
         {/* Timeline and Preview - Right Panel */}
         <div className="flex-1 flex flex-col">
-          {/* Preview Area */}
-          <div className="h-1/2 bg-black border-b border-gray-700 flex flex-col">
+          {/* Preview Area - Increased height */}
+          <div className="flex-grow bg-black border-b border-gray-700 flex flex-col" style={{ minHeight: '0' }}>
             {/* Preview Header */}
             <div className="h-10 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4">
               <span className="text-sm font-medium text-white">Timeline Preview</span>
@@ -196,7 +196,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               </div>
             </div>
 
-            {/* Video Preview */}
+            {/* Video Preview - Now takes most of the space */}
             <div className="flex-1 flex items-center justify-center p-4 bg-black">
               {timelineClips.length === 0 ? (
                 <div className="text-center text-gray-400">
@@ -204,7 +204,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                   <div className="text-sm">Add clips to timeline to see preview</div>
                 </div>
               ) : (
-                <div className="bg-black flex items-center justify-center">
+                <div className="bg-black flex items-center justify-center relative">
                   <video
                     ref={videoRef}
                     className="rounded-lg border border-gray-600"
@@ -258,8 +258,8 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
             )}
           </div>
 
-          {/* Timeline */}
-          <div className="h-1/2">
+          {/* Timeline - Reduced to fixed small height */}
+          <div className="flex-shrink-0" style={{ height: '140px' }}>
             <Timeline 
               clips={timelineClips} 
               onRemoveClip={(clipId) => {

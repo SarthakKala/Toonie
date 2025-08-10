@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, ZoomIn, ZoomOut } from 'lucide-react';
-import { clipStorage, StoredClip } from '../../../../utils/clipStorage';
+import { clipStorage, StoredClip } from '../../../../utils/ClipStorage';
 
 interface TimelineProps {
   clips: string[];
@@ -187,8 +187,8 @@ export const Timeline: React.FC<TimelineProps> = ({
   return (
     <div className="h-full flex flex-col bg-gray-900">
       {/* Timeline Header */}
-      <div className="h-10 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4 flex-shrink-0">
-        <span className="text-sm font-medium text-white">Timeline</span>
+      <div className="h-8 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4 flex-shrink-0">
+        <span className="text-xs font-medium text-white">Timeline</span>
         <div className="flex items-center space-x-2">
           {/* Zoom Controls */}
           <button
@@ -233,7 +233,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         ) : (
           <div className="flex-1 flex flex-col">
             {/* Time Ruler */}
-            <div className="h-8 bg-gray-800 border-b border-gray-600 relative overflow-x-auto flex-shrink-0">
+            <div className="h-1 bg-gray-800 border-b border-gray-600 relative overflow-x-auto flex-shrink-0"> {/* Reduced from h-8 to h-6 */}
               <div 
                 className="h-full relative"
                 style={{ 
@@ -253,13 +253,13 @@ export const Timeline: React.FC<TimelineProps> = ({
                 style={{ 
                   minWidth: '100%',
                   width: `${Math.max(timelineWidth, timelineWidth * zoom)}px`,
-                  minHeight: '120px'
+                  minHeight: '10px' // Reduced from 120px
                 }}
               >
                 {/* Timeline Track Background */}
                 <div 
                   ref={timelineTrackRef}
-                  className="absolute top-4 bottom-4 bg-gray-800 rounded cursor-pointer"
+                  className="absolute top-2 bottom-2 bg-gray-800 rounded cursor-pointer" // Reduced top/bottom from 4px to 2px
                   style={{ 
                     left: '16px',
                     right: '16px',
@@ -273,7 +273,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                   className="relative h-full"
                   style={{ 
                     width: `${timelineWidth * zoom}px`,
-                    padding: '16px'
+                    padding: '4px 16px' // Reduced vertical padding from 16px to 8px
                   }}
                 >
                   {clipData.map((clip, index) => {
@@ -283,7 +283,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                     return (
                       <div
                         key={`${clip.id}-${index}`}
-                        className={`absolute top-6 h-16 bg-blue-600 rounded border-2 overflow-hidden cursor-move transition-all select-none ${
+                        className={`absolute top-2 h-12 bg-blue-600 rounded border-2 overflow-hidden cursor-move transition-all select-none ${
                           draggedIndex === index ? 'opacity-50 scale-105 z-10' : ''
                         } ${
                           dragOverIndex === index ? 'border-blue-300' : 'border-blue-500'
@@ -310,7 +310,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                         )}
                         
                         {/* Clip Info */}
-                        <div className="absolute inset-0 p-2 flex flex-col justify-between text-white text-xs pointer-events-none">
+                        <div className="absolute inset-0 p-1 flex flex-col justify-between text-white text-xs pointer-events-none">
                           <div className="font-medium truncate">{clip.metadata.name}</div>
                           <div className="text-blue-200">
                             {clip.metadata.duration.toFixed(1)}s
@@ -358,7 +358,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
         {/* Timeline Footer */}
         {clips.length > 0 && (
-          <div className="h-8 bg-gray-850 border-t border-gray-700 flex items-center justify-between px-4 text-xs text-gray-400 flex-shrink-0">
+          <div className="h-5 bg-gray-850 border-t border-gray-700 flex items-center justify-between px-4 text-xs text-gray-400 flex-shrink-0"> {/* Reduced from h-8 to h-6 */}
             <div className="flex items-center space-x-4">
               <span>{clips.length} clips</span>
               <span>Zoom: {(zoom * 100).toFixed(0)}%</span>
@@ -373,3 +373,6 @@ export const Timeline: React.FC<TimelineProps> = ({
     </div>
   );
 };
+
+
+
