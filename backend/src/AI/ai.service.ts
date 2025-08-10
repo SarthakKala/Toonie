@@ -38,7 +38,7 @@ export interface GenerateCodeOptions {
 export class AIService {
   private readonly logger = new Logger(AIService.name);
   private client: AxiosInstance;
-  private defaultModel: string = 'openai/gpt-oss-20b:free';
+  private defaultModel: string = 'deepseek/deepseek-chat-v3-0324:free';
 
   constructor(private configService: ConfigService) {
     this.initializeClient();
