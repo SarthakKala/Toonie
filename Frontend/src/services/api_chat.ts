@@ -24,7 +24,7 @@ export const generateAnimation = async (prompt: string) => {
         context: {
           width: 600,
           height: 450,
-          duration: 5,
+          duration: 10,
           style: 'modern'
         }
       })

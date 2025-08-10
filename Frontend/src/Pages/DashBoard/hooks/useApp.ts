@@ -8,7 +8,7 @@ const mockClips: VideoClip[] = [
   {
     id: '1',
     name: 'Cat Flying Animation',
-    duration: 5.0,
+    duration: 10.0,
     startTime: 0,
     endTime: 5,
     type: 'animation',

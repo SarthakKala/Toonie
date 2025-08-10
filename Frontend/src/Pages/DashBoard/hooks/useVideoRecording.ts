@@ -17,7 +17,7 @@ export const useVideoRecording = () => {
     canvas: HTMLCanvasElement,
     options: RecordingOptions = {}
   ): Promise<Blob> => {
-    const { duration = 5000, frameRate = 30 } = options;
+    const { duration = 10000, frameRate = 30 } = options;
     
     return new Promise((resolve, reject) => {
       try {

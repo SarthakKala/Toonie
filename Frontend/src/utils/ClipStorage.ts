@@ -109,6 +109,23 @@ class ClipStorage {
     });
   }
 
+    async getStorageInfo() {
+    if (!this.db) await this.init();
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(['clips'], 'readonly');
+      const store = transaction.objectStore('clips');
+      const countRequest = store.count();
+      countRequest.onsuccess = () => {
+        resolve({
+          dbName: this.dbName,
+          version: this.version,
+          clipCount: countRequest.result
+        });
+      };
+      countRequest.onerror = () => reject(countRequest.error);
+    });
+  }
+
   async deleteClip(id: string): Promise<void> {
     if (!this.db) await this.init();
     

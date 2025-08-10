@@ -33,11 +33,12 @@ export interface GenerateCodeOptions {
   };
 }
 
+
 @Injectable()
 export class AIService {
   private readonly logger = new Logger(AIService.name);
   private client: AxiosInstance;
-  private defaultModel: string = 'deepseek/deepseek-chat-v3-0324:free';
+  private defaultModel: string = 'openai/gpt-oss-20b:free';
 
   constructor(private configService: ConfigService) {
     this.initializeClient();
@@ -142,44 +143,47 @@ export class AIService {
     }
   }
 
-  private createSystemPrompt(context: GenerateCodeOptions['context'] = {}): string {
-    const {
-      width = 600,
-      height = 450,
-      duration = 5,
-      style = 'modern'
-    } = context;
+private createSystemPrompt(context: GenerateCodeOptions['context'] = {}): string {
+  const {
+    width = 600,
+    height = 450,
+    duration = 10,
+    style = 'modern'
+  } = context;
 
-return `You are an expert p5.js developer. Generate clean, complete p5.js code.
+  return `You are an expert p5.js developer. Generate clean, complete p5.js code.
 
-REQUIREMENTS:
-- Use p5.js instance mode (do NOT use global mode).
-- All functions and variables must be attached to the "p" object (e.g., p.setup = function() {...}, p.draw = function() {...}).
-- Canvas size: ${width || 600}x${height || 400}
-- Animation duration: ${duration} seconds
-- Style: ${style}
-- Always include complete p.setup and p.draw functions
-- Add meaningful comments
-- Use smooth animations and good performance
+  REQUIREMENTS:
+  - Use p5.js instance mode with the following format:
+  - Canvas size: ${width || 600}x${height || 400}
+  - Animation duration: ${duration} seconds
+  - Style: ${style}
+  - Add meaningful comments
+  - Use smooth animations and good performance
 
-RESPONSE FORMAT:
-First, provide a brief explanation of what the animation does.
+  RESPONSE FORMAT:
+  First, provide a brief explanation of what the animation does.
 
-Then provide the complete code in a single code block like this:
+  Then provide the complete code in a single code block like this:
 
-\`\`\`javascript
-p.setup = function() {
-  p.createCanvas(${width}, ${height});
-  // initialization code
-};
+  \`\`\`javascript
+  // p5.js instance mode sketch
+  function sketch(p) {
+    p.setup = function() {
+      p.createCanvas(${width}, ${height});
+      // initialization code
+    };
 
-p.draw = function() {
-  // animation code
-};
-\`\`\`
+    p.draw = function() {
+      // animation code
+    };
 
-Make sure the code is complete, uses instance mode, and is runnable.`;
+    // Helper functions can go here
   }
+  \`\`\`
+
+  Make sure the code is complete, uses instance mode, and is runnable.`;
+}
 
   // Update the extractCodeFromResponse method
   private extractCodeFromResponse(response: string): string {

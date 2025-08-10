@@ -60,12 +60,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                   li: ({ node, ...props }) => <li className="mb-1 text-gray-200" {...props} />,
                   
                   // Code blocks with better highlighting - softer colors
-                  code: ({ node, inline, className, children, ...props }) => 
-                    inline ? (
-                      <code className="bg-gray-800 px-1.5 py-0.5 rounded text-gray-300 font-mono text-sm" {...props}>
-                        {children}
-                      </code>
-                    ) : (
+                  code: ({ node, className, children, ...props }) => 
+                   (
                       <pre className="bg-gray-900 p-3 rounded-md my-3 overflow-x-auto border border-gray-800 w-full">
                         <code className="text-gray-300 font-mono text-sm block" {...props}>
                           {children}

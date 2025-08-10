@@ -19,7 +19,7 @@ export class GenerateCodeContextDto {
   @IsNumber()
   @Min(1)
   @Max(60)
-  duration?: number = 5;
+  duration?: number = 10;
 
   @IsOptional()
   @IsString()

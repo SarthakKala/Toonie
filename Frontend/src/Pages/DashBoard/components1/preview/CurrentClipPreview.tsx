@@ -8,7 +8,7 @@ import { clipStorage } from '../../../../utils/clipStorage';
 
 interface CurrentClipPreviewProps {
   activeFile: CodeFile;
-  onExportClip: (clipId: string) => void; // Changed to return clip ID
+  onExportClip: (clipData: { blob: Blob; name: string; duration: number }) => Promise<void>;
   onMoveToVideoEditor: () => void;
   isLoading?: boolean;
 }
@@ -99,8 +99,12 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
       
       console.log('Clip saved with ID:', clipId);
       
-      // Call the export callback with clip ID
-      onExportClip(clipId);
+      // Call the export callback with clip data
+      onExportClip({
+        blob,
+        name: clipName,
+        duration: recordingDuration
+      });
       
       // Show success message
       alert(`Recording completed! Clip "${clipName}" has been saved to your library. File size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);

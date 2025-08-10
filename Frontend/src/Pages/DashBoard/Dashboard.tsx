@@ -41,9 +41,12 @@ function App() {
     }
   };
 
-  const handleExportClip = async (clipId: string) => {
-    console.log('Clip exported with ID:', clipId);
-    // Optional: Show success notification or update UI
+  const handleExportClip = async (clipData: { blob: Blob; name: string; duration: number; }) => {
+    console.log('Clip exported:', {
+      name: clipData.name,
+      duration: clipData.duration,
+      blob: clipData.blob
+    });
   };
 
   const handleMoveToVideoEditor = () => {
@@ -107,13 +110,15 @@ function App() {
   }, []);
 
   return (
-    <ResizableLayout 
-      leftPanel={chatPanel}
-      rightPanel={editorPanel}
-      initialLeftWidth={35}
-      minWidth={25}
-      maxWidth={60}
-    />
+    <div className="dashboard-root">
+      <ResizableLayout 
+        leftPanel={chatPanel}
+        rightPanel={editorPanel}
+        initialLeftWidth={35}
+        minWidth={25}
+        maxWidth={60}
+      />
+    </div>
   );
 }
 

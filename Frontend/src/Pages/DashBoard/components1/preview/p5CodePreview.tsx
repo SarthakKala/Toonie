@@ -58,14 +58,21 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
       return;
     }
 
+    console.log('----------------------------------------');
+    console.log('Creating sketch with code:');
+    console.log(code);
+    console.log('----------------------------------------');
+
     try {
       let sketchFunction;
       
       // Check if code contains a complete sketch function
       if (code.includes('const sketch') || code.includes('function sketch')) {
+        console.log('Using existing sketch function from code');
         // Execute the code to get the sketch function
         sketchFunction = new Function(`${code}\nreturn sketch;`)();
       } else {
+        console.log('Wrapping code in sketch function');
         // Wrap the code in a sketch function
         sketchFunction = new Function("p", code);
       }
@@ -73,11 +80,16 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
       // Create wrapper to capture canvas
       const wrappedSketch = (p: any) => {
         // Call original sketch function and get result
+        console.log('Executing sketch function');
         const result = sketchFunction(p);
+        console.log('Sketch function result:', result);
         
         // Handle both object-style and direct assignment
         let setupFunc = result?.setup || p.setup;
         let drawFunc = result?.draw || p.draw;
+
+        console.log('Found setup function:', !!setupFunc);
+        console.log('Found draw function:', !!drawFunc);
         
         // Wrap setup to capture canvas
         const originalSetup = setupFunc;
@@ -134,6 +146,20 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
       
     } catch (e) {
       console.error("Error creating p5 sketch:", e);
+      if (e instanceof Error) {
+        console.error("Error details:", {
+          message: e.message,
+          stack: e.stack,
+          code: code.substring(0, 200) + '...' // First 200 chars of code
+        });
+      } else {
+        console.error("Error details:", {
+          message: String(e),
+          stack: undefined,
+          code: code.substring(0, 200) + '...' // First 200 chars of code
+        });
+      }
+      
       
       // Fallback sketch that definitely creates a canvas
       const fallbackSketch = (p: any) => {
