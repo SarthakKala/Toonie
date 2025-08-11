@@ -8,7 +8,7 @@ interface ClipMetadata {
   thumbnail?: string;
 }
 
-interface StoredClip {
+export interface StoredClip {
   metadata: ClipMetadata;
   blob: Blob;
 }

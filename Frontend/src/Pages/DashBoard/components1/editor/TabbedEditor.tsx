@@ -196,9 +196,9 @@ import React, { useState,useEffect } from "react";
               <>
                 <button
                   onClick={onExport}
-                  className="p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  className="p-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
                   style={{ color: '#ffffff' }}
-                  title="Export Video"
+                  title="Export Video Composition"
                 >
                   <Download className="w-5 h-5" />
                 </button>
