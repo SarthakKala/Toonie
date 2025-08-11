@@ -1,5 +1,5 @@
-import React from 'react';
-import Editor from '@monaco-editor/react';
+import React, { useEffect } from 'react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 import { CodeFile } from '../../types';
 
 interface CodeDisplayProps {
@@ -8,6 +8,25 @@ interface CodeDisplayProps {
 }
 
 export const CodeDisplay: React.FC<CodeDisplayProps> = ({ file, onCodeChange }) => {
+  const monaco = useMonaco();
+  
+  // Configure Monaco to disable red squiggly lines when the editor loads
+  useEffect(() => {
+    if (monaco) {
+      // Disable TypeScript validation
+      monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: true,
+        noSyntaxValidation: true,
+      });
+      
+      // Also disable JavaScript validation
+      monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: true,
+        noSyntaxValidation: true,
+      });
+    }
+  }, [monaco]);
+  
   const getLanguage = (fileLanguage: string) => {
     switch (fileLanguage.toLowerCase()) {
       case 'typescript':
@@ -22,6 +41,8 @@ export const CodeDisplay: React.FC<CodeDisplayProps> = ({ file, onCodeChange }) 
         return 'html';
       case 'json':
         return 'json';
+      case 'txt':
+        return 'plaintext';
       default:
         return 'typescript';
     }
@@ -31,48 +52,26 @@ export const CodeDisplay: React.FC<CodeDisplayProps> = ({ file, onCodeChange }) 
     <div className="flex-1 bg-black">
       <div className="h-full">
         <div className="bg-gray-900 px-4 py-2 border-b border-gray-600 flex items-center justify-between">
-          <span className="text-sm text-gray-400">{file.name}</span>
-          <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-            {file.language}
-          </span>
+          <span className="text-gray-300 font-medium">{file.name}</span>
         </div>
-        <div className="h-full" style={{ height: 'calc(100% - 41px)' }}>
-          <Editor
-            height="100%"
-            language={getLanguage(file.language)}
-            value={file.content}
-            onChange={onCodeChange}
-            theme="vs-dark"
-            options={{
-              fontSize: 14,
-              fontFamily: 'JetBrains Mono, Consolas, Monaco, monospace',
-              lineNumbers: 'on',
-              wordWrap: 'on',
-              automaticLayout: true,
-              scrollBeyondLastLine: false,
-              minimap: { enabled: false },
-              tabSize: 2,
-              insertSpaces: true,
-              renderWhitespace: 'selection',
-              folding: true,
-              lineDecorationsWidth: 10,
-              lineNumbersMinChars: 3,
-              glyphMargin: false,
-              contextmenu: true,
-              mouseWheelZoom: true,
-              smoothScrolling: true,
-              cursorBlinking: 'blink',
-              cursorSmoothCaretAnimation: 'on',
-              renderLineHighlight: 'line',
-              selectionHighlight: true,
-              occurrencesHighlight: 'singleFile',
-              codeLens: false,
-              foldingHighlight: true,
-              unfoldOnClickAfterEndOfLine: false,
-              showFoldingControls: 'mouseover',
-            }}
-          />
-        </div>
+        <Editor
+          height="90vh"
+          language={getLanguage(file.language)}
+          value={file.content}
+          onChange={onCodeChange}
+          theme="vs-dark"
+          options={{
+            fontSize: 14,
+            minimap: { enabled: true },
+            scrollBeyondLastLine: false,
+            wordWrap: 'on',
+            automaticLayout: true,
+            tabSize: 2,
+            // Disable additional validation options
+            formatOnType: false,
+            formatOnPaste: false,
+          }}
+        />
       </div>
     </div>
   );

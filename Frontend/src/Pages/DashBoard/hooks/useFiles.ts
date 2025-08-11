@@ -45,7 +45,7 @@ import Sketch from "./Sketch";
 const App: React.FC = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <h1>My p5.js Sketch</h1>
+      <h1>Sketch</h1>
       <Sketch />
     </div>
   );
@@ -56,13 +56,97 @@ root.render(<App />);`
   },
 
 
-  {
+{
     id: '3',
     name: 'instructions.txt',
     language: 'txt',
     content:
-`Welcome to the project!
-This will contain all the instructions you need to get started.`
+`# Getting Started with p5.js in React
+
+## Project Setup Instructions
+
+### 1. Install Required Dependencies
+\`\`\`bash
+npm install p5 @types/p5
+\`\`\`
+
+### 2. Understanding the Files
+
+#### Sketch.tsx
+This file creates a React component that wraps a p5.js sketch:
+- A ref (\`sketchRef\`) holds the div where p5 will be mounted
+- The useEffect hook initializes p5 and cleans up on unmount
+- The sketch function contains your actual p5.js code
+
+#### main.tsx
+This file renders the Sketch component within your React application:
+- Imports and mounts the Sketch component
+- Provides a basic layout for your p5.js sketch
+
+### 3. How to Use the Sketch.tsx File
+
+1. **Add your p5.js code** within the sketch function:
+\`\`\`typescript
+const sketch = (p: p5) => {
+  p.setup = () => {
+    p.createCanvas(400, 400);
+  };
+  
+  p.draw = () => {
+    p.background(220);
+    p.ellipse(p.width/2, p.height/2, 50, 50);
+  };
+};
+\`\`\`
+
+2. **Customize the canvas** by adjusting parameters in \`createCanvas()\`
+
+3. **Access the p5 instance** through the \`p\` parameter in your functions
+
+### 4. p5.js General Tips
+
+- The \`setup()\` function runs once when the sketch starts
+- The \`draw()\` function runs continuously in a loop
+- Use p5's built-in variables like \`p.width\`, \`p.height\`, \`p.mouseX\`, \`p.mouseY\`
+- Common methods:
+  - \`p.background(color)\`: Clears the canvas with a color
+  - \`p.fill(color)\`: Sets fill color for shapes
+  - \`p.stroke(color)\`: Sets outline color
+  - \`p.noStroke()\`: Removes outlines
+  - \`p.ellipse(x, y, w, h)\`: Draws an ellipse
+  - \`p.rect(x, y, w, h)\`: Draws a rectangle
+
+### 5. Handling Props
+
+To make your Sketch component more versatile, you can pass props:
+\`\`\`typescript
+// In Sketch.tsx
+const Sketch: React.FC<{ bgColor?: number }> = ({ bgColor = 220 }) => {
+  // ...
+  const sketch = (p: p5) => {
+    p.setup = () => {
+      p.createCanvas(400, 400);
+    };
+    
+    p.draw = () => {
+      p.background(bgColor);
+      // Rest of your code...
+    };
+  };
+  // ...
+}
+
+// In main.tsx, you can then use:
+<Sketch bgColor={100} />
+\`\`\`
+
+### 6. Troubleshooting
+
+- If the canvas doesn't appear, check if the div has proper dimensions
+- For responsive canvases, use \`p.windowResized\` function
+- Add \`console.log\` statements to debug your sketch
+
+Enjoy creating amazing animations with p5.js and React!`
   }
 ];
 

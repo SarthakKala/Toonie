@@ -140,170 +140,182 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   }, [isPlaying, totalDuration]);
 
   // Export functionality - Add debug logging
-  const handleExportVideo = async () => {
-    console.log('Export button clicked!');
-    console.log('Timeline clips:', timelineClips);
+const handleExportVideo = async () => {
+  console.log('Export button clicked!');
+  
+  if (timelineClips.length === 0) {
+    alert('Please add clips to the timeline before exporting.');
+    return;
+  }
+
+  setIsExporting(true);
+  setExportProgress(0);
+
+  try {
+    // Load all clips first
+    console.log('Loading clips for export...');
+    const clipsData = [];
     
-    if (timelineClips.length === 0) {
-      alert('Please add clips to the timeline before exporting.');
-      return;
+    for (let i = 0; i < timelineClips.length; i++) {
+      const clipId = timelineClips[i];
+      const clipData = await clipStorage.getClip(clipId);
+      
+      if (!clipData) {
+        throw new Error(`Could not load clip: ${clipId}`);
+      }
+      
+      clipsData.push(clipData);
+      setExportProgress((i + 1) / timelineClips.length * 10);
+      console.log(`Loaded clip ${i + 1}/${timelineClips.length}: ${clipData.metadata.name}`);
     }
 
-    setIsExporting(true);
-    setExportProgress(0);
+    console.log('All clips loaded, starting composition...');
+    
+    // Create canvas with consistent dimensions
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 450;
+    const ctx = canvas.getContext('2d', { alpha: false }); // Disable alpha for performance
+    
+    if (!ctx) {
+      throw new Error('Cannot create canvas context');
+    }
 
-    try {
-      // Load all clips first
-      console.log('Loading clips for export...');
-      const clipsData = [];
-      
-      for (let i = 0; i < timelineClips.length; i++) {
-        const clipId = timelineClips[i];
-        const clipData = await clipStorage.getClip(clipId);
-        
-        if (!clipData) {
-          throw new Error(`Could not load clip: ${clipId}`);
-        }
-        
-        clipsData.push(clipData);
-        setExportProgress((i + 1) / timelineClips.length * 10); // 0-10% for loading
-        console.log(`Loaded clip ${i + 1}/${timelineClips.length}: ${clipData.metadata.name}`);
+    // Set canvas style for better rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // IMPORTANT: Match capture FPS with render FPS for consistency
+    const targetFPS = 30; // Set both recording and rendering to same FPS
+    const stream = canvas.captureStream(targetFPS);
+    
+    // Choose best codec for smoothness
+    let mimeType = 'video/webm;codecs=vp9'; // VP9 generally provides better quality
+    
+    // Check codec support
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+        mimeType = 'video/webm;codecs=vp8';
+      } else {
+        mimeType = 'video/webm';
       }
+    }
 
-      console.log('All clips loaded, starting composition...');
-      
-      // Create canvas for composition
-      const canvas = document.createElement('canvas');
-      canvas.width = 600;
-      canvas.height = 450;
-      const ctx = canvas.getContext('2d');
-      
-      if (!ctx) {
-        throw new Error('Cannot create canvas context');
-      }
+    console.log('Using MIME type:', mimeType);
+    
+    // Use higher bit rate for animation clarity
+    const mediaRecorder = new MediaRecorder(stream, { 
+      mimeType,
+      videoBitsPerSecond: 5000000 // 5 Mbps for better animation quality
+    });
+    
+    const recordedChunks: Blob[] = [];
 
-      // Set canvas style for better rendering
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-
-      // Set up MediaRecorder with optimized settings
-      const stream = canvas.captureStream(30); // Fixed 30 FPS
-      let mimeType = 'video/webm;codecs=vp9';
-      
-      // Check codec support
-      if (!MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-        if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
-          mimeType = 'video/webm;codecs=vp8';
-        } else {
-          mimeType = 'video/webm';
-        }
-      }
-
-      console.log('Using MIME type:', mimeType);
-      
-      const mediaRecorder = new MediaRecorder(stream, { 
-        mimeType,
-        videoBitsPerSecond: 2500000 // 2.5 Mbps for better quality
-      });
-      
-      const recordedChunks: Blob[] = [];
-
-    // Set up event handlers
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         recordedChunks.push(event.data);
-        console.log('Recorded chunk:', event.data.size, 'bytes');
       }
     };
 
-    // Start recording
-    mediaRecorder.start(200); // Record in 200ms chunks for stability
+    mediaRecorder.start(1000); // Larger chunks for stability
     console.log('Recording started');
 
-    // Process each clip with better timing
-    const targetFPS = 30;
-    const frameDuration = 1000 / targetFPS; // ms per frame
-    let totalProcessedTime = 0;
-
-    for (let clipIndex = 0; clipIndex < clipsData.length; clipIndex++) {
-      const clip = clipsData[clipIndex];
-      console.log(`Processing clip ${clipIndex + 1}: ${clip.metadata.name}`);
-      
-      // Create video element for this clip
+    // Pre-create all video elements to improve performance
+    const videoElements = await Promise.all(clipsData.map(async (clip) => {
       const video = document.createElement('video');
-      video.src = URL.createObjectURL(clip.blob);
       video.muted = true;
-      video.preload = 'metadata';
+      video.preload = 'auto'; // Ensure videos are fully loaded
+      video.playsInline = true;
+      video.src = URL.createObjectURL(clip.blob);
       
-      await new Promise<void>((resolve, reject) => {
-        video.onloadeddata = async () => {
-          console.log(`Video loaded: ${video.duration}s, expected: ${clip.metadata.duration}s`);
-          
-          const actualDuration = Math.min(video.duration, clip.metadata.duration);
-          const totalFrames = Math.floor(actualDuration * targetFPS);
-          
-          console.log(`Rendering ${totalFrames} frames for clip ${clipIndex + 1}`);
-
-          // Pre-load video at start
-          video.currentTime = 0;
-          
-          await new Promise(loadResolve => {
-            video.onseeked = () => loadResolve(undefined);
-          });
-
-          // Render frames with consistent timing
-          for (let frame = 0; frame < totalFrames; frame++) {
-            const timeInClip = (frame / targetFPS);
-            
-            // Only seek if we need to move significantly
-            if (Math.abs(video.currentTime - timeInClip) > 0.05) {
-              video.currentTime = timeInClip;
-              
-              // Wait for seek to complete
-              await new Promise(seekResolve => {
-                const onSeeked = () => {
-                  video.removeEventListener('seeked', onSeeked);
-                  seekResolve(undefined);
-                };
-                video.addEventListener('seeked', onSeeked);
-              });
-            }
-            
-            // Clear canvas with black background
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // CLEAN VERSION: Only draw video frame - NO OVERLAY/WATERMARK
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Update export progress (only in console, not on video)
-            const overallProgress = 10 + ((totalProcessedTime + timeInClip) / totalDuration) * 80; // 10-90%
-            setExportProgress(Math.min(90, overallProgress));
-            
-            // Wait for next frame time to maintain consistent FPS
-            await new Promise(resolve => setTimeout(resolve, frameDuration));
-          }
-          
-          totalProcessedTime += actualDuration;
-          URL.revokeObjectURL(video.src);
-          resolve();
-        };
-        
-        video.onerror = () => reject(new Error(`Failed to load video for clip: ${clip.metadata.name}`));
+      // Wait for metadata to load
+      await new Promise<void>((resolve) => {
+        video.onloadedmetadata = () => resolve();
+        video.onerror = () => resolve(); // Don't fail if one video has issues
       });
-    }
+      
+      return { video, duration: clip.metadata.duration };
+    }));
 
-    console.log('All clips processed, finalizing...');
-    setExportProgress(95);
+    // Calculate total duration for progress tracking
+    const totalDuration = videoElements.reduce((sum, item) => sum + item.duration, 0);
+    let accumulatedTime = 0;
+    let startTime: number | null = null;
+    let rafId: number | null = null;
+    let lastFrameTime = 0;
     
-    // Wait a bit for final frames to be captured
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Use requestAnimationFrame for smooth rendering
+    const renderFrame = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp;
+      const elapsedTime = (timestamp - startTime) / 1000; // in seconds
+      
+      // Ensure we maintain consistent FPS by checking time since last frame
+      const timeSinceLastFrame = timestamp - lastFrameTime;
+      const targetFrameTime = 1000 / targetFPS;
+      
+      if (timeSinceLastFrame >= targetFrameTime || lastFrameTime === 0) {
+        lastFrameTime = timestamp;
+        
+        // Find which clip to render based on elapsed time
+        let currentTime = elapsedTime;
+        let clipIndex = 0;
+        let timeWithinClip = 0;
+        let accumulatedDuration = 0;
+        
+        // Find the current clip based on elapsed time
+        for (let i = 0; i < videoElements.length; i++) {
+          const { duration } = videoElements[i];
+          if (currentTime < accumulatedDuration + duration) {
+            clipIndex = i;
+            timeWithinClip = currentTime - accumulatedDuration;
+            break;
+          }
+          accumulatedDuration += duration;
+        }
+        
+        // If we've reached the end, stop the animation
+        if (clipIndex >= videoElements.length) {
+          console.log('Animation complete');
+          if (rafId !== null) cancelAnimationFrame(rafId);
+          mediaRecorder.stop();
+          return;
+        }
+        
+        // Get the current video element
+        const { video } = videoElements[clipIndex];
+        
+        // Set current time within the clip - use precise seeking
+        if (Math.abs(video.currentTime - timeWithinClip) > 0.01) {
+          video.currentTime = timeWithinClip;
+        }
+        
+        // Clear canvas with black background for consistent frames
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw the current frame from the video
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Update progress (10-90%)
+        const progress = 10 + (elapsedTime / totalDuration) * 80;
+        setExportProgress(Math.min(90, progress));
+      }
+      
+      // Continue animation if we haven't reached the end
+      if (elapsedTime < totalDuration) {
+        rafId = requestAnimationFrame(renderFrame);
+      } else {
+        console.log('Animation complete, stopping recorder');
+        mediaRecorder.stop();
+      }
+    };
     
-    // Stop recording and finalize
+    // Start the animation loop
+    rafId = requestAnimationFrame(renderFrame);
+    
+    // Wait for recording to complete
     await new Promise<void>((resolve, reject) => {
       mediaRecorder.onstop = () => {
-        console.log('Recording stopped, chunks:', recordedChunks.length);
-        
         if (recordedChunks.length === 0) {
           reject(new Error('No data was recorded'));
           return;
@@ -312,11 +324,16 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
         const finalBlob = new Blob(recordedChunks, { type: mimeType });
         console.log('Final blob size:', finalBlob.size, 'bytes');
         
+        // Clean up video elements
+        videoElements.forEach(({ video }) => {
+          URL.revokeObjectURL(video.src);
+        });
+        
         // Download the video
         const url = URL.createObjectURL(finalBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `naya_composition_${Date.now()}.webm`;
+        a.download = `SmoothAnimation${Date.now()}.webm`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -325,7 +342,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
         setExportProgress(100);
         
         const fileSizeMB = (finalBlob.size / 1024 / 1024).toFixed(2);
-        alert(`✅ Video exported successfully!\n📁 File size: ${fileSizeMB} MB\n🎬 Duration: ${totalDuration.toFixed(1)}s\n📊 Quality: 30 FPS`);
+        alert(`✅ Video exported successfully!\n📁 File size: ${fileSizeMB} MB\n🎬 Duration: ${totalDuration.toFixed(1)}s\n📊 Quality: ${targetFPS} FPS`);
         resolve();
       };
 
@@ -333,11 +350,6 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
         console.error('MediaRecorder error:', event);
         reject(new Error('Recording failed'));
       };
-
-      // Stop recording
-      if (mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-      }
     });
 
   } catch (error) {
