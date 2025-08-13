@@ -57,8 +57,8 @@ export class AIService {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000'),
-        'X-Title': 'Naya AI Studio'
+        // 'HTTP-Referer': this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000'),
+        'X-Title': 'AI Studio'
       },
       timeout: 30000 // 30 seconds timeout
     });
