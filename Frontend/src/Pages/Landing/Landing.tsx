@@ -138,7 +138,6 @@ function Landing() {
               className="w-[85%] mx-auto bg-#161616 mt-20 mb-20 rounded-lg"
               style={{
                 backgroundColor: "#161616",
-                // border: "2px solid #2c2c2e",
                 minHeight: "1200px",
                 marginTop: "8rem",
                 display: "flex",
