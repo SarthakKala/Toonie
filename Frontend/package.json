@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:nodemon": "nodemon --exec \"npm run dev\"",
-    "build": "tsc -b && vite build",
-    "newbuild":"tsc --skipLibCheck --noEmitOnError false && vite build",
+    "build":"tsc --skipLibCheck --noEmitOnError false && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
