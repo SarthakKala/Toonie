@@ -4,7 +4,7 @@ import { CodeFile } from '../../types';
 import P5CodePreview, { P5CodePreviewRef } from "./p5CodePreview";
 import { useCodeStore } from "@/codeStore";
 import { useVideoRecording } from "../../hooks/useVideoRecording";
-import { clipStorage } from '../../../../utils/clipStorage';
+import { clipStorage } from "../../../../utils/ClipStorage";
 
 interface CurrentClipPreviewProps {
   activeFile: CodeFile;
