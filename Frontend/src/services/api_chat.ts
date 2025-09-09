@@ -1,5 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api'; // Adjust port as needed
-
+const API_BASE_URL =  `process.env.BACKEND_URL/api`; // Adjust port as needed
 export interface AIResponse {
   success: boolean;
   data: {
