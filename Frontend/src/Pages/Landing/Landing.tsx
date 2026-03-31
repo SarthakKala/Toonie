@@ -148,40 +148,59 @@ function Landing() {
               }}
             >
               <div
-                className="w-screen flex flex-col items-center justify-center mx-auto"
+                className="w-full flex flex-col items-center justify-center mx-auto"
                 style={{
-                  maxWidth: "100vw",
+                  maxWidth: "100%",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   position: "relative",
                   zIndex: 2,
+                  padding: "0 2rem",
                 }}
               >
-                <h1
-                  style={{
+                {/* Section header */}
+                <div style={{ marginTop: "5rem", marginBottom: "4rem", textAlign: "center" }}>
+                  {/* Small pill label */}
+                  <div style={{
+                    display: "inline-block",
+                    padding: "0.3rem 0.9rem",
+                    borderRadius: "999px",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.04)",
+                    color: "rgba(255,255,255,0.45)",
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    marginBottom: "1.4rem",
+                  }}>
+                    AI — Powered
+                  </div>
+
+                  {/* Big headline — two lines */}
+                  <h1 style={{
                     color: "#fff",
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    marginBottom: "1rem",
-                    marginTop: "5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  What is Toonie
-                </h1>
-                <p
-                  style={{
-                    color: "#b3b3b3",
+                    fontSize: "clamp(2.2rem, 4vw, 3.4rem)",
+                    fontWeight: 800,
+                    lineHeight: 1.12,
+                    letterSpacing: "-0.03em",
+                    marginBottom: "1.2rem",
+                  }}>
+                    Everything you can describe,<br />
+                    <span style={{ color: "rgba(255,255,255,0.4)" }}>animated.</span>
+                  </h1>
+
+                  {/* Short descriptor — one line max */}
+                  <p style={{
+                    color: "rgba(255,255,255,0.38)",
                     fontSize: "1rem",
-                    marginBottom: "4.5rem",
-                    textAlign: "center",
-                    maxWidth: 700,
-                  }}
-                >
-                  Toonie is an AI-powered web app that transforms your ideas into beautiful 2D animations. Just by typing a prompt! Toonie uses AI to generate modular animation scenes in p5.js, complete with narration, code, and a visual preview.
-                  You can refine scenes, view the generated code, combine multiple animations in a timeline editor - all just by using Toonie :)
-                </p>
+                    maxWidth: 480,
+                    margin: "0 auto",
+                    lineHeight: 1.6,
+                  }}>
+                    Type a prompt. Get live p5.js code, a real-time preview, and a video you can export — no setup, no coding.
+                  </p>
+                </div>
                 <Grid />
                 <MarqueeText />
               </div>

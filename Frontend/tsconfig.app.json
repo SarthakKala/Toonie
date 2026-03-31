@@ -8,7 +8,7 @@
     "skipLibCheck": true,
 
     //MagicUI
-    "baseUrl": ".",
+    "baseUrl": "",
     "paths": {
       "@/*": [
         "./src/*"
