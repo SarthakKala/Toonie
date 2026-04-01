@@ -5,7 +5,7 @@ import { DotPattern } from "@/Pages/Landing/components/magicui/dot-pattern";
 
 export function DotPatternDemo() {
   return (
-    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-[#161616]">
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-[#161616]">
       <div
         className="absolute top-0 left-0 w-full h-[2px] z-10 pointer-events-none"
         style={{

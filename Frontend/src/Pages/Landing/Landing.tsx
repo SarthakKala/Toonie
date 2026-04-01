@@ -213,7 +213,7 @@ function Landing() {
             style={{
               position: "relative",
               width: "100%",
-              minHeight: "260px",
+              minHeight: "320px",
               background: "#161616",
               overflow: "hidden",
               marginTop: "2rem",
@@ -230,39 +230,99 @@ function Landing() {
             {/* Footer content */}
             <div
               className="relative z-10 w-full h-full flex flex-col justify-between ai-chat-hide-cursor"
-              style={{ minHeight: 260, padding: "2.5rem 0 1.5rem 0" }}
+              style={{ minHeight: 320, padding: "2.5rem 0 1.5rem 0" }}
             >
-              <div className="flex flex-row justify-between w-[90%] mx-auto items-start">
-                {/* Left links */}
-                <div className="flex flex-col gap-2">
-                  <a href="#" className="text-white text-xl font-semibold mb-2 hover:underline transition">Chat</a>
-                  <a href="#" className="text-white text-xl font-semibold mb-2 hover:underline transition">Features</a>
-                  <a href="#" className="text-white text-xl font-semibold hover:underline transition">Contact</a>
-                </div>
-                {/* Right newsletter */}
-                <div className="flex flex-col items-end gap-2 max-w-[340px] w-full">
-                  <span className="text-white text-base mb-2 text-right opacity-90">
-                    Get industry insights and creative inspiration straight to your inbox.
+              {/* 3-column top section — Product | Tagline | Resources */}
+              <div className="w-[90%] mx-auto" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 1fr", gap: "2.5rem", alignItems: "start" }}>
+
+                {/* Col 1 — Product links */}
+                <div className="flex flex-col" style={{ gap: "0.6rem" }}>
+                  <span style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "0.3rem" }}>
+                    Product
                   </span>
-                  <form className="flex flex-row w-full border-b border-white/30">
-                    <input
-                      type="email"
-                      placeholder="Email address"
-                      className="bg-transparent outline-none border-none text-white placeholder:text-white/60 flex-1 py-2 px-0 text-base"
-                    />
-                    <button
-                      type="submit"
-                      className="text-white text-xl px-2 hover:opacity-80 transition"
-                      aria-label="Subscribe"
+                  {[
+                    { label: "Dashboard", href: "#" },
+                    { label: "GitHub", href: "https://github.com/SarthakKala/Toonie" },
+                    { label: "Contact", href: "#" },
+                  ].map(({ label, href }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target={href.startsWith("http") ? "_blank" : undefined}
+                      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", textDecoration: "none", padding: "0.2rem 0", transition: "color 0.15s" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.55)")}
                     >
-                      →
-                    </button>
-                  </form>
+                      {label}
+                    </a>
+                  ))}
                 </div>
+
+                {/* Col 2 — Tagline (centred) */}
+                <div className="flex flex-col items-center text-center" style={{ gap: "0.85rem" }}>
+                  <h2 style={{
+                    color: "#fff",
+                    fontSize: "clamp(1.6rem, 2.4vw, 2.2rem)",
+                    fontWeight: 800,
+                    lineHeight: 1.2,
+                    letterSpacing: "-0.03em",
+                    margin: 0,
+                    textShadow: "0 2px 24px rgba(0,0,0,0.9)",
+                  }}>
+                    Turn any idea into<br />a 2D animation.
+                  </h2>
+                  <a
+                    href="#"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      padding: "0.55rem 1.2rem",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(255,255,255,0.25)",
+                      background: "rgba(30, 30, 30, 0.95)",
+                      color: "#fff",
+                      fontSize: "0.85rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      marginTop: "0.1rem",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(50, 50, 50, 0.98)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(30, 30, 30, 0.95)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; }}
+                  >
+                    Start Animating →
+                  </a>
+                </div>
+
+                {/* Col 3 — Resources */}
+                <div className="flex flex-col items-end" style={{ gap: "0.6rem" }}>
+                  <span style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "0.3rem" }}>
+                    Resources
+                  </span>
+                  {[
+                    { label: "Open Source", href: "https://github.com/SarthakKala/Toonie" },
+                    { label: "Features", href: "#" },
+                    { label: "About", href: "#" },
+                  ].map(({ label, href }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target={href.startsWith("http") ? "_blank" : undefined}
+                      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", textDecoration: "none", padding: "0.2rem 0", transition: "color 0.15s" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.55)")}
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </div>
+
               </div>
 
-              {/* Large Toonie text */}
-              <div className="w-full flex items-end justify-start relative mt-8 mb-2">
+              {/* Large Toonie text — centred */}
+              <div className="w-full flex items-end justify-center relative mt-8 mb-2">
                 <span
                   className="text-[min(16vw,160px)] font-extrabold text-[#FAF9F6] leading-none tracking-tight opacity-95"
                   style={{
@@ -270,21 +330,58 @@ function Landing() {
                     letterSpacing: "-0.04em",
                     lineHeight: 1,
                     userSelect: "none",
-                    marginLeft: "5%", // ensure left alignment
                   }}
                 >
                   Toonie
                 </span>
               </div>
 
-              {/* Bottom bar */}
-              <div className="w-[90%] mx-auto border-t border-white/20 pt-3 flex flex-row justify-between items-center text-white/80 text-sm">
-                <span>Copyright © Toonie. All rights reserved</span>
-                <span>Jaipur, Rajasthan, India</span>
-                <div className="flex gap-8">
-                  <a href="#" className="hover:underline">GitHub</a>
-                  <a href="#" className="hover:underline">Instagram</a>
-                  <a href="#" className="hover:underline">LinkedIn</a>
+              {/* Bottom bar — glass fill from gradient line to page bottom */}
+              <div style={{ position: "relative" }}>
+                {/* Solid fill that covers everything from here to bottom — no dots bleed-through */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: "-200px", // extend well past the footer edge
+                    background: "#161616",
+                    zIndex: 0,
+                  }}
+                />
+                {/* Glass layer on top of solid fill */}
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 1,
+                    background: "rgba(22, 22, 24, 0.72)",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)",
+                  }}
+                >
+                  {/* Gradient line — same as navbar */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "1px",
+                      background: "linear-gradient(to right, transparent 0%, #b0b0b0 48%, #b0b0b0 52%, transparent 100%)",
+                      opacity: 0.7,
+                      pointerEvents: "none",
+                    }}
+                  />
+                  <div className="w-[90%] mx-auto flex flex-row justify-between items-center text-white/80 text-sm" style={{ padding: "1rem 0" }}>
+                    <span>Copyright © Toonie. All rights reserved</span>
+                    <span>Made with 🤍 from Sarthak</span>
+                    <div className="flex gap-8">
+                      <a href="#" className="hover:underline">GitHub</a>
+                      <a href="#" className="hover:underline">Instagram</a>
+                      <a href="#" className="hover:underline">LinkedIn</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
