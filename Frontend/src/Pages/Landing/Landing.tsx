@@ -135,6 +135,7 @@ function Landing() {
 
             <div
               ref={blackBoxRef}
+              id="features"
               className="w-[85%] mx-auto bg-#161616 mt-20 mb-20 rounded-lg"
               style={{
                 backgroundColor: "#161616",
@@ -161,20 +162,48 @@ function Landing() {
               >
                 {/* Section header */}
                 <div style={{ marginTop: "5rem", marginBottom: "4rem", textAlign: "center" }}>
-                  {/* Small pill label */}
+                  {/* Small pill label — persistent border + spark */}
                   <div style={{
+                    position: "relative",
                     display: "inline-block",
-                    padding: "0.3rem 0.9rem",
+                    padding: "1.5px",
                     borderRadius: "999px",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    background: "rgba(255,255,255,0.04)",
-                    color: "rgba(255,255,255,0.45)",
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
+                    overflow: "hidden",
                     marginBottom: "1.4rem",
                   }}>
-                    AI — Powered
+                    {/* Persistent base border (always visible) */}
+                    <div style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "999px",
+                      background: "rgba(255,255,255,0.18)",
+                    }} />
+                    {/* Rotating spark on top */}
+                    <div style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      width: "260px",
+                      height: "260px",
+                      marginTop: "-130px",
+                      marginLeft: "-130px",
+                      background: "conic-gradient(from 0deg, transparent 0deg, transparent 330deg, rgba(160,160,160,0.3) 342deg, rgba(255,255,255,0.9) 350deg, rgba(255,255,255,1) 354deg, rgba(210,210,210,0.5) 358deg, transparent 360deg)",
+                      animation: "spark-rotate 3s linear infinite",
+                    }} />
+                    {/* Inner badge */}
+                    <div style={{
+                      position: "relative",
+                      zIndex: 1,
+                      padding: "0.3rem 0.9rem",
+                      borderRadius: "999px",
+                      background: "#161616",
+                      color: "rgba(255,255,255,0.45)",
+                      fontSize: "0.7rem",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase" as const,
+                    }}>
+                      AI Powered
+                    </div>
                   </div>
 
                   {/* Big headline — two lines */}
@@ -397,6 +426,10 @@ function Landing() {
           @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+          }
+          @keyframes spark-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
           }
         `}
       </style>
