@@ -1,6 +1,6 @@
 import React from "react";
 
-const marqueeText = "• A robot dancing under starlight  • Ocean waves crashing against rocks  • A cat sleeping on a floating leaf  • Fireflies blinking in a forest at night  • A bouncing basketball on a rainy street  • Two planets orbiting each other in deep space  • A fish jumping over lily pads  • A kite flying in a stormy sky  • Leaves swirling in autumn wind  • A train passing through a pixel city  • Butterflies following a glowing trail  ";
+const marqueeText = "★ A spiral galaxy slowly rotating  ★ Rain falling on a neon-lit city  ★ Particles forming a human face  ★ A DNA helix unraveling in slow motion  ★ Sound waves visualized as glowing rings  ★ A black hole bending light around it  ★ Geometric shapes morphing endlessly  ★ A heartbeat traced across a dark canvas  ★ Stars being born inside a nebula  ★ Liquid metal flowing through a maze  ★ A clock dissolving into particles  ★ Northern lights rippling across the sky  ";
 
 const MarqueeText: React.FC = () => {
     return (
