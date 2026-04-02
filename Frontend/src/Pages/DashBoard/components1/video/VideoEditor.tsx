@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MediaLibrary } from './MediaLibrary';
 import { Timeline } from "./Timeline";
 import { clipStorage } from "../../../../utils/ClipStorage";
-import { Play, Pause, Download, Loader } from 'lucide-react';
+import { Play, Pause, Download, Loader, Video } from 'lucide-react';
 
 // Remove the old VideoEditorProps interface and create a simple one
 interface VideoEditorProps {
@@ -373,10 +373,18 @@ const handleExportVideo = async () => {
   return (
     <div className="h-full flex flex-col bg-gray-900">
       {/* Video Editor Header */}
-      <div className="h-12 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4">
+      <div
+        className="flex items-center justify-between px-4"
+        style={{
+          height: '52px',
+          backgroundColor: '#161616',
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          flexShrink: 0,
+        }}
+      >
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-          <span className="text-sm font-medium text-white">Video Editor</span>
+          <Video className="w-4 h-4 text-white" />
+          <span className="text-base font-semibold text-white">Video Editor</span>
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 text-sm text-gray-400">

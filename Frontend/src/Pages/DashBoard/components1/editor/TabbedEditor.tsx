@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Code, Video, Monitor, Play, Download, Settings } from "lucide-react";
+import { Code, Video, Monitor, Download, Settings } from "lucide-react";
 import { CodeEditor } from "./CodeEditor";
 import { VideoEditor } from '../video/VideoEditor';
 import { CurrentClipPreview } from "../preview/CurrentClipPreview";
@@ -161,7 +161,6 @@ export const TabbedEditor: React.FC<TabbedEditorProps> = ({
 
         {/* Right actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {editorMode === "code" && actionBtn(onRunCode, <Play size={15} />, "Run Code", true)}
           {editorMode === "video" && actionBtn(onExport, <Download size={15} />, "Export", true)}
           {actionBtn(() => {}, <Settings size={15} />, "Settings")}
         </div>

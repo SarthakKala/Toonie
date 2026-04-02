@@ -75,7 +75,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       <div style={{
         backgroundColor: '#161616', borderRight: '1px solid rgba(255,255,255,0.07)',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        padding: '0.75rem 0', width: 44, flexShrink: 0,
+        padding: '0.75rem 0', width: 44, flexShrink: 0, overflow: 'hidden',
       }}>
         <button
           onClick={() => setIsCollapsed(false)}
@@ -86,7 +86,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
         >
           <Folder size={15} />
         </button>
-        <div style={{ marginTop: '0.75rem', transform: 'rotate(90deg)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+        <div style={{ marginTop: '0.75rem', fontSize: '0.6rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap', writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
           Explorer
         </div>
         <div style={{ marginTop: '1rem', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.06)', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

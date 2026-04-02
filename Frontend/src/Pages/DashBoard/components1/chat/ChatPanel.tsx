@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Settings } from 'lucide-react';
 import { MessageBubble } from './MessageBubble';
 import { MessageInput } from './MessageInput';
 import { Message } from '../../types';
@@ -72,7 +71,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.02em' }}>
           Toonie
         </span>
-        <Settings size={15} style={{ color: 'rgba(255,255,255,0.35)', cursor: 'pointer' }} />
       </div>
 
       {/* ── Middle: scrollable area + welcome overlay ── */}

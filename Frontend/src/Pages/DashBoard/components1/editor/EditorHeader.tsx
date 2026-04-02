@@ -1,19 +1,25 @@
 import React from 'react';
-import { Code, GitBranch, Play, Copy, Download } from 'lucide-react';
+import { Code, GitBranch, Copy, Download } from 'lucide-react';
 
 interface EditorHeaderProps {
-  onRunCode?: () => void;
   onCopyCode?: () => void;
   onDownloadCode?: () => void;
 }
 
 export const EditorHeader: React.FC<EditorHeaderProps> = ({
-  onRunCode,
   onCopyCode,
   onDownloadCode
 }) => {
   return (
-    <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+    <div
+      className="px-4 flex items-center justify-between"
+      style={{
+        height: '52px',
+        backgroundColor: '#161616',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        flexShrink: 0,
+      }}
+    >
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
           <Code className="w-5 h-5 text-white" />
@@ -25,13 +31,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <button 
-          onClick={onRunCode}
-          className="p-2 hover:bg-gray-800 rounded transition-colors" 
-          title="Run Code"
-        >
-          <Play className="w-4 h-4 text-gray-400 hover:text-white" />
-        </button>
         <button 
           onClick={onCopyCode}
           className="p-2 hover:bg-gray-800 rounded transition-colors" 

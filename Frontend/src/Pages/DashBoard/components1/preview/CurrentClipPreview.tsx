@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Download, ArrowRight, Settings, Maximize, X, Loader, Video, Square } from 'lucide-react';
+import { Download, ArrowRight, Settings, Maximize, X, Loader, Video, Square, Monitor } from 'lucide-react';
 import { CodeFile } from '../../types';
 import P5CodePreview, { P5CodePreviewRef } from "./p5CodePreview";
 import { useCodeStore } from "@/codeStore";
@@ -117,13 +117,13 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
 
       {/* Header */}
       <div style={{
-        height: '46px', borderBottom: '1px solid rgba(255,255,255,0.07)',
+        height: '52px', borderBottom: '1px solid rgba(255,255,255,0.07)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 1rem', flexShrink: 0, backgroundColor: '#161616',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,255,255,0.35)' }} />
-          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#fff' }}>Current Clip Preview</span>
+          <Monitor size={16} color="#ffffff" />
+          <span style={{ fontSize: '1rem', fontWeight: 600, color: '#fff' }}>Current Clip Preview</span>
           <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>({activeFile.name})</span>
         </div>
 
