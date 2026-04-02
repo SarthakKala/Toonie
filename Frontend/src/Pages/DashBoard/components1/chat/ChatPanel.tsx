@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
-import { MessageCircle, Settings } from 'lucide-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { Settings } from 'lucide-react';
 import { MessageBubble } from './MessageBubble';
 import { MessageInput } from './MessageInput';
 import { Message } from '../../types';
 import { MessageLoading } from '@/Pages/Landing/components/ui/message-loading';
+import Meteors from './Meteors';
 
 interface ChatPanelProps {
   messages: Message[];
@@ -11,59 +12,200 @@ interface ChatPanelProps {
   isLoading?: boolean;
 }
 
+const suggestions = [
+  'rotating galaxy',
+  'rain on neon city',
+  'DNA helix unraveling',
+];
+
 export const ChatPanel: React.FC<ChatPanelProps> = ({
   messages,
   onSendMessage,
   isLoading = false
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasConversation = messages.some(m => m.role !== 'system');
 
-  // Scroll to bottom when messages change
+  // shutter: 'idle' → 'closing' → 'done'
+  const [shutter, setShutter] = useState<'idle' | 'closing' | 'done'>('idle');
+  const prevHasConversation = useRef(hasConversation);
+
+  useEffect(() => {
+    if (!prevHasConversation.current && hasConversation && shutter === 'idle') {
+      setShutter('closing');
+      setTimeout(() => setShutter('done'), 520);
+    }
+    prevHasConversation.current = hasConversation;
+  }, [hasConversation, shutter]);
+
   useEffect(() => {
     if (messagesEndRef.current) {
-      const messagesContainer = messagesEndRef.current.parentElement;
-      if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
+      const container = messagesEndRef.current.parentElement;
+      if (container) container.scrollTop = container.scrollHeight;
     }
   }, [messages]);
-  
+
   return (
-    <div className="w-full flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="px-4 py-3 border-b border-gray-600 flex items-center justify-between" style={{ backgroundColor: '#000000' }}>
-        <div className="flex items-center space-x-2">
-          <MessageCircle className="w-5 h-5" style={{ color: '#FFFFFF' }} />
-          <h2 className="font-semibold" style={{ color: '#FAF9F6' }}>Toonie</h2>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="text-xs text-gray-400">
-            Use /animate to create animations
-          </div>
-          <Settings className="w-5 h-5 cursor-pointer transition-colors" style={{ color: '#9CA3AF' }} />
-        </div>
+    <div style={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      backgroundColor: '#161616',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+
+      {/* ── Header ── */}
+      <div style={{
+        padding: '0 1rem',
+        height: '44px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        flexShrink: 0,
+        position: 'relative',
+        zIndex: 10,
+        backgroundColor: '#161616',
+      }}>
+        <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.02em' }}>
+          Toonie
+        </span>
+        <Settings size={15} style={{ color: 'rgba(255,255,255,0.35)', cursor: 'pointer' }} />
       </div>
 
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: '#161616' }}>
-      {messages.map((message, index) => (
-        <div key={`${message.id || message.timestamp}-${index}`}>
-          <MessageBubble message={message} />
-        </div>
-      ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="rounded-lg px-4 py-2" style={{ backgroundColor: '#000000', color: '#FAF9F6' }}>
-              <div className="flex items-center space-x-2">
-                <MessageLoading />
-                <span className="text-sm">Generating response...</span>
+      {/* ── Middle: scrollable area + welcome overlay ── */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', minHeight: 0 }}>
+
+        {/* Welcome screen — slides up on first message */}
+        {shutter !== 'done' && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 5,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            transform: shutter === 'closing' ? 'translateY(-100%)' : 'translateY(0)',
+            transition: shutter === 'closing' ? 'transform 0.5s cubic-bezier(0.76,0,0.24,1)' : 'none',
+            backgroundColor: '#161616',
+          }}>
+            {/* Meteors background */}
+            <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
+              <Meteors number={18} minDuration={4} maxDuration={10} />
+            </div>
+
+            {/* Bottom fade so text reads clearly */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '55%',
+              background: 'linear-gradient(to bottom, transparent 0%, rgba(22,22,22,0.9) 50%, #161616 100%)',
+              zIndex: 1,
+              pointerEvents: 'none',
+            }} />
+
+            {/* Text content */}
+            <div style={{
+              position: 'relative',
+              zIndex: 2,
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-end',
+              padding: '0 1.5rem 1.8rem 1.5rem',
+            }}>
+              <p style={{
+                color: 'rgba(255,255,255,0.32)',
+                fontSize: '0.62rem',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                marginBottom: '0.6rem',
+                fontWeight: 500,
+              }}>
+                AI Assistant
+              </p>
+
+              <h1 style={{
+                color: '#fff',
+                fontSize: 'clamp(1.7rem, 3vw, 2.2rem)',
+                fontWeight: 900,
+                lineHeight: 1.1,
+                letterSpacing: '-0.04em',
+                marginBottom: '1.4rem',
+              }}>
+                What should<br />
+                <span style={{ color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', fontWeight: 800 }}>
+                  we animate
+                </span>{' '}
+                today?
+              </h1>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
+                {suggestions.map(s => (
+                  <button
+                    key={s}
+                    onClick={() => onSendMessage(`/animate ${s}`, true)}
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.09)',
+                      borderRadius: '8px',
+                      padding: '0.48rem 0.85rem',
+                      color: 'rgba(255,255,255,0.5)',
+                      fontSize: '0.78rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                      e.currentTarget.style.color = '#fff';
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)';
+                    }}
+                  >
+                    /animate {s} →
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
+
+        {/* Conversation messages */}
+        <div style={{
+          height: '100%',
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          opacity: shutter === 'done' ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}>
+          <div style={{ padding: '1.2rem 1.5rem', display: 'flex', flexDirection: 'column' }}>
+            {messages
+              .filter(m => m.role !== 'system')
+              .map((message, index) => (
+                <MessageBubble key={`${message.id || message.timestamp}-${index}`} message={message} />
+              ))}
+            {isLoading && (
+              <div style={{ paddingTop: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <MessageLoading />
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
       </div>
 
+      {/* ── Input — always visible at bottom ── */}
       <MessageInput onSendMessage={onSendMessage} disabled={isLoading} />
     </div>
   );

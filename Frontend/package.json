@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:nodemon": "nodemon --exec \"npm run dev\"",
-    "build":"tsc --skipLibCheck --noEmitOnError false && vite build",
+    "build": "tsc --skipLibCheck --noEmitOnError false && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,6 +14,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/react-slot": "^1.2.3",
+    "@react-three/fiber": "^9.5.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.10.0",

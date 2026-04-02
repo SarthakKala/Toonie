@@ -11,12 +11,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   disabled = false
 }) => {
   const [inputMessage, setInputMessage] = useState('');
-  
+
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
-      
       const isCommand = inputMessage.trim().startsWith('/animate') || inputMessage.trim().startsWith('/generate');
-      
       onSendMessage(inputMessage, isCommand);
       setInputMessage('');
     }
@@ -30,32 +28,56 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="p-4 border-t border-gray-600" style={{ backgroundColor: '#000000' }}>
-      <div className="flex space-x-2">
+    <div style={{
+      padding: '0.75rem 1rem',
+      borderTop: '1px solid rgba(255,255,255,0.07)',
+      backgroundColor: '#161616',
+      flexShrink: 0,
+    }}>
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
         <textarea
           value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
+          onChange={e => setInputMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask a question or type /animate [your idea]..."
-          className="flex-1 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white resize-none"
-          style={{ 
-            backgroundColor: '#000000',
-            color: '#FAF9F6',
-            borderColor: '#4B5563'
-          }}
-          rows={3}
+          rows={2}
           disabled={disabled}
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.09)',
+            borderRadius: '10px',
+            padding: '0.6rem 0.9rem',
+            color: '#fff',
+            fontSize: '0.82rem',
+            lineHeight: 1.5,
+            resize: 'none',
+            outline: 'none',
+            fontFamily: 'inherit',
+            transition: 'border-color 0.15s',
+          }}
+          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)')}
+          onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)')}
         />
         <button
           onClick={handleSendMessage}
           disabled={disabled || !inputMessage.trim()}
-          className="rounded-lg px-4 py-2 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ 
-            backgroundColor: '#FAF9F6',
-            color: '#000000'
+          style={{
+            width: '42px',
+            alignSelf: 'stretch',
+            borderRadius: '10px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            background: '#fff',
+            color: '#161616',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: inputMessage.trim() ? 'pointer' : 'not-allowed',
+            transition: 'background 0.15s',
+            flexShrink: 0,
           }}
         >
-          <Send className="w-4 h-4" />
+          <Send size={14} />
         </button>
       </div>
     </div>

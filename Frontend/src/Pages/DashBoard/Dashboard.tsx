@@ -114,8 +114,8 @@ function App() {
       <ResizableLayout 
         leftPanel={chatPanel}
         rightPanel={editorPanel}
-        initialLeftWidth={35}
-        minWidth={25}
+        initialLeftWidth={28}
+        minWidth={20}
         maxWidth={60}
       />
     </div>
