@@ -187,7 +187,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#161616' }}>
       {/* Timeline Header */}
-      <div style={{ height: 32, borderBottom: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', flexShrink: 0, backgroundColor: '#161616' }}>
+      <div style={{ height: 32, borderBottom: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', flexShrink: 0, backgroundColor: '#161616' }}>
         <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#fff' }}>Timeline</span>
         <div className="flex items-center space-x-2">
           {/* Zoom Controls */}
@@ -209,7 +209,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             <ZoomIn className="w-3 h-3" />
           </button>
           
-          <div className="w-px h-4 bg-gray-600 mx-2" />
+          <div className="w-px h-4 mx-2" style={{ background: 'rgba(255,255,255,0.12)' }} />
           
           <span className="text-xs text-gray-400">
             {clips.length} clip{clips.length !== 1 ? 's' : ''}
@@ -233,7 +233,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         ) : (
           <div className="flex-1 flex flex-col">
             {/* Time Ruler */}
-            <div className="h-1 relative overflow-x-auto flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', backgroundColor: '#161616' }}>
+            <div className="h-1 relative overflow-x-auto flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', backgroundColor: '#161616' }}>
               <div
                 className="h-full relative"
                 style={{ width: `${Math.max(timelineWidth, timelineWidth * zoom)}px`, minWidth: '100%' }}
@@ -356,7 +356,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
         {/* Timeline Footer */}
         {clips.length > 0 && (
-          <div style={{ height: 28, borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', fontSize: '0.68rem', color: 'rgba(255,255,255,0.28)', flexShrink: 0 }}>
+          <div style={{ height: 28, borderTop: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', fontSize: '0.68rem', color: 'rgba(255,255,255,0.28)', flexShrink: 0 }}>
             <div className="flex items-center space-x-4">
               <span>{clips.length} clips</span>
               <span>Zoom: {(zoom * 100).toFixed(0)}%</span>

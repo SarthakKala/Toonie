@@ -378,7 +378,7 @@ const handleExportVideo = async () => {
         style={{
           height: '52px',
           backgroundColor: '#161616',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: '1px solid rgba(255,255,255,0.12)',
           flexShrink: 0,
         }}
       >
@@ -396,7 +396,22 @@ const handleExportVideo = async () => {
           <button
             onClick={handleExportVideo}
             disabled={isExporting || timelineClips.length === 0}
-            className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded text-sm font-medium text-white transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed"
+            style={{
+              background: isExporting || timelineClips.length === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)',
+              color: isExporting || timelineClips.length === 0 ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.92)',
+              border: '1px solid rgba(255,255,255,0.24)',
+            }}
+            onMouseEnter={(e) => {
+              if (!isExporting && timelineClips.length > 0) {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.14)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isExporting && timelineClips.length > 0) {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+              }
+            }}
             title="Export Video Composition"
           >
             {isExporting ? (
@@ -416,10 +431,10 @@ const handleExportVideo = async () => {
 
       {/* Export Progress Bar */}
       {isExporting && (
-        <div className="h-2 bg-gray-700">
+        <div className="h-2" style={{ background: 'rgba(255,255,255,0.08)' }}>
           <div 
-            className="h-full bg-green-500 transition-all duration-300"
-            style={{ width: `${exportProgress}%` }}
+            className="h-full transition-all duration-300"
+            style={{ background: 'rgba(255,255,255,0.75)', width: `${exportProgress}%` }}
           />
         </div>
       )}
@@ -427,7 +442,7 @@ const handleExportVideo = async () => {
       {/* Main Editor Layout */}
       <div className="flex-1 flex">
         {/* Media Library - Left Panel */}
-        <div className="w-1/3 border-r border-gray-700">
+        <div className="w-1/3" style={{ borderRight: '1px solid rgba(255,255,255,0.14)' }}>
           <MediaLibrary
             onSelectClip={handleSelectClip}
             onAddToTimeline={handleAddToTimeline}
@@ -438,15 +453,20 @@ const handleExportVideo = async () => {
         {/* Timeline and Preview - Right Panel */}
         <div className="flex-1 flex flex-col">
           {/* Preview Area - Increased height */}
-          <div className="flex-grow flex flex-col" style={{ minHeight: '0', backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex-grow flex flex-col" style={{ minHeight: '0', backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
             {/* Preview Header */}
-            <div className="h-10 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4">
+            <div className="h-10 flex items-center justify-between px-4" style={{ backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
               <span className="text-sm font-medium text-white">Timeline Preview</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handlePlayPause}
                   disabled={isExporting}
-                  className="flex items-center space-x-1 px-3 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded text-xs text-white"
+                  className="flex items-center space-x-1 px-3 py-1 rounded text-xs transition-colors disabled:cursor-not-allowed"
+                  style={{
+                    background: isExporting ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.9)',
+                    color: isExporting ? 'rgba(255,255,255,0.4)' : '#161616',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                  }}
                 >
                   {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
                   <span>{isPlaying ? 'Pause' : 'Play'}</span>
@@ -458,7 +478,7 @@ const handleExportVideo = async () => {
             </div>
 
             {/* Video Preview - Now takes most of the space */}
-            <div className="flex-1 flex items-center justify-center p-4" style={{ backgroundColor: '#0e0e0e' }}>
+            <div className="flex-1 flex items-center justify-center p-4" style={{ backgroundColor: '#161616' }}>
               {timelineClips.length === 0 ? (
                 <div className="text-center text-gray-400">
                   <div className="text-lg mb-2">Timeline Preview</div>
@@ -471,14 +491,15 @@ const handleExportVideo = async () => {
                 <div className="flex items-center justify-center relative" style={{ backgroundColor: '#161616' }}>
                   <video
                     ref={videoRef}
-                    className="rounded-lg border border-gray-600"
+                    className="rounded-lg"
                     width={600}
                     height={450}
                     style={{
                       width: '600px',
                       height: '450px',
                       display: 'block',
-                      objectFit: 'cover'
+                      objectFit: 'cover',
+                      border: '1px solid rgba(255,255,255,0.12)'
                     }}
                     muted
                     controls={false}
@@ -497,8 +518,8 @@ const handleExportVideo = async () => {
                   {/* Export status overlay */}
                   {isExporting && (
                     <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(22,22,22,0.7)' }}>
-                      <div className="bg-gray-800 p-4 rounded-lg border border-gray-600 text-center">
-                        <Loader className="w-8 h-8 animate-spin mx-auto mb-2 text-green-500" />
+                      <div className="p-4 rounded-lg text-center" style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.07)' }}>
+                        <Loader className="w-8 h-8 animate-spin mx-auto mb-2 text-white" />
                         <div className="text-white text-sm">Exporting Video...</div>
                         <div className="text-gray-400 text-xs mt-1">{exportProgress.toFixed(0)}% complete</div>
                       </div>
@@ -510,10 +531,10 @@ const handleExportVideo = async () => {
 
             {/* Progress Bar */}
             {totalDuration > 0 && (
-              <div className="h-2 bg-gray-700 relative">
+              <div className="h-2 relative" style={{ background: 'rgba(255,255,255,0.08)' }}>
                 <div 
-                  className="h-full bg-green-500 transition-all duration-75"
-                  style={{ width: `${(currentTime / totalDuration) * 100}%` }}
+                  className="h-full transition-all duration-75"
+                  style={{ background: 'rgba(255,255,255,0.75)', width: `${(currentTime / totalDuration) * 100}%` }}
                 />
                 <input
                   type="range"

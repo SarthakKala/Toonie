@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Download, ArrowRight, Settings, Maximize, X, Loader, Video, Square, Monitor } from 'lucide-react';
+import { Download, ArrowRight, X, Loader, Video, Square, Monitor } from 'lucide-react';
 import { CodeFile } from '../../types';
 import P5CodePreview, { P5CodePreviewRef } from "./p5CodePreview";
 import { useCodeStore } from "@/codeStore";
@@ -155,14 +155,6 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
           )}
 
           {pillBtn(onMoveToVideoEditor, <ArrowRight size={11} />, 'To Video Editor', false, 'Move to video editor')}
-
-          <button
-            style={{ padding: '0.3rem', borderRadius: '5px', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}
-          >
-            <Settings size={14} />
-          </button>
         </div>
       </div>
 
@@ -197,14 +189,6 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
                 <span style={{ fontSize: '0.7rem', color: '#fff' }}>REC {Math.ceil((100 - recordingProgress) * recordingDuration / 100)}s</span>
               </div>
             )}
-            <div style={{ position: 'absolute', top: 8, right: 8 }}>
-              <button
-                onClick={() => setIsMaximized(true)}
-                style={{ padding: '0.25rem', background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '4px', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}
-              >
-                <Maximize size={12} />
-              </button>
-            </div>
             <div style={{ position: 'absolute', bottom: 8, left: 8, background: 'rgba(0,0,0,0.5)', borderRadius: '3px', padding: '0.15rem 0.4rem', fontSize: '0.65rem', color: 'rgba(255,255,255,0.6)' }}>
               850 x 580
             </div>
