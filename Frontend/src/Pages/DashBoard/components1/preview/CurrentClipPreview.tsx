@@ -182,7 +182,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
       )}
 
       {/* Preview area */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', backgroundColor: '#0e0e0e' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', backgroundColor: '#161616' }}>
         {isLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
             <Loader size={28} style={{ color: 'rgba(255,255,255,0.4)', animation: 'spin 0.8s linear infinite' }} />
@@ -206,7 +206,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
               </button>
             </div>
             <div style={{ position: 'absolute', bottom: 8, left: 8, background: 'rgba(0,0,0,0.5)', borderRadius: '3px', padding: '0.15rem 0.4rem', fontSize: '0.65rem', color: 'rgba(255,255,255,0.6)' }}>
-              600x450
+              850 x 580
             </div>
           </div>
         )}
@@ -224,7 +224,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
               <X size={14} />
             </button>
             <div style={{ position: 'absolute', bottom: 8, left: 8, background: 'rgba(0,0,0,0.5)', borderRadius: '3px', padding: '0.15rem 0.4rem', fontSize: '0.65rem', color: 'rgba(255,255,255,0.6)' }}>
-              600x450 (Fullscreen)
+              720x540 (Fullscreen)
             </div>
           </div>
         </div>

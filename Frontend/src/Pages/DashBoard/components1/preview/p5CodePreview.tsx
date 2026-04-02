@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from "react";
+import { useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from "react";
 
 declare global {
   interface Window {
@@ -14,6 +14,11 @@ export interface P5CodePreviewRef {
   getCanvas: () => HTMLCanvasElement | null;
   restart: () => void;
 }
+
+const BASE_CANVAS_WIDTH = 600;
+const BASE_CANVAS_HEIGHT = 450;
+const DISPLAY_CANVAS_WIDTH = 850;
+const DISPLAY_CANVAS_HEIGHT = 580;
 
 const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }, ref) => {
   const sketchRef = useRef<HTMLDivElement>(null);
@@ -110,12 +115,17 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
               canvasRef.current = canvas as HTMLCanvasElement;
               console.log('Canvas captured successfully:', canvas);
               console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
+
+              // Scale preview canvas for better on-screen visibility.
+              canvas.style.width = `${DISPLAY_CANVAS_WIDTH}px`;
+              canvas.style.height = `${DISPLAY_CANVAS_HEIGHT}px`;
+              canvas.style.backgroundColor = '#161616';
               
               // Ensure canvas has proper size
               if (canvas.width === 0 || canvas.height === 0) {
                 console.warn('Canvas has zero dimensions, setting default size');
-                canvas.width = 600;
-                canvas.height = 450;
+                canvas.width = BASE_CANVAS_WIDTH;
+                canvas.height = BASE_CANVAS_HEIGHT;
               }
             } else {
               console.warn('Canvas not found in setup');
@@ -133,7 +143,7 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
           p.draw = drawFunc;
         } else if (!p.draw) {
           p.draw = () => {
-            p.background(220);
+            p.background(22, 22, 22);
             p.fill(50);
             p.textAlign(p.CENTER, p.CENTER);
             p.text('Animation running...', p.width/2, p.height/2);
@@ -165,7 +175,7 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
       const fallbackSketch = (p: any) => {
         p.setup = () => {
           console.log('Fallback setup called');
-          p.createCanvas(600, 450);
+          p.createCanvas(BASE_CANVAS_WIDTH, BASE_CANVAS_HEIGHT);
           
           setTimeout(() => {
             const canvas = sketchRef.current?.querySelector('canvas');
@@ -177,7 +187,7 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
         };
         
         p.draw = () => {
-          p.background(220, 100, 100);
+          p.background(22, 22, 22);
           p.fill(255);
           p.textAlign(p.CENTER, p.CENTER);
           p.text('Error in code - using fallback', p.width/2, p.height/2);
@@ -212,12 +222,12 @@ const P5CodePreview = forwardRef<P5CodePreviewRef, P5CodePreviewProps>(({ code }
     <div 
       ref={sketchRef} 
       style={{ 
-        width: '600px', 
-        height: '450px',
+        width: `${DISPLAY_CANVAS_WIDTH}px`, 
+        height: `${DISPLAY_CANVAS_HEIGHT}px`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#222'
+        background: '#161616'
       }} 
     />
   );
