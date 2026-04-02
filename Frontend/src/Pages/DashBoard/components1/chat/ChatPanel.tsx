@@ -59,7 +59,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       {/* ── Header ── */}
       <div style={{
         padding: '0 1rem',
-        height: '44px',
+        height: '52px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',

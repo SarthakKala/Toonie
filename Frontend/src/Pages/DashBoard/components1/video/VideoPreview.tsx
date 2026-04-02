@@ -97,7 +97,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-700">
+      <div className="relative rounded-lg overflow-hidden shadow-2xl" style={{ backgroundColor: '#161616', border: '1px solid rgba(255,255,255,0.08)' }}>
         <canvas
           ref={canvasRef}
           width={600}
@@ -107,21 +107,21 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
         
         {/* Overlay Controls */}
         <div className="absolute top-4 right-4 flex space-x-2">
-          <button className="p-2 bg-black bg-opacity-50 text-white rounded hover:bg-opacity-75 transition-colors">
+          <button className="p-2 text-white rounded transition-colors" style={{ background: 'rgba(22,22,22,0.7)' }}>
             <Maximize className="w-4 h-4" />
           </button>
-          <button className="p-2 bg-black bg-opacity-50 text-white rounded hover:bg-opacity-75 transition-colors">
+          <button className="p-2 text-white rounded transition-colors" style={{ background: 'rgba(22,22,22,0.7)' }}>
             <Settings className="w-4 h-4" />
           </button>
         </div>
         
         {/* Resolution Info */}
-        <div className="absolute bottom-4 left-4 text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded">
+        <div className="absolute bottom-4 left-4 text-white text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(22,22,22,0.7)' }}>
           800x600 • 60fps
         </div>
-        
+
         {/* Time Display */}
-        <div className="absolute bottom-4 right-4 text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded">
+        <div className="absolute bottom-4 right-4 text-white text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(22,22,22,0.7)' }}>
           {currentTime.toFixed(2)}s
         </div>
       </div>

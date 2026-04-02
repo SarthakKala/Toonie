@@ -67,24 +67,23 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
       }}
     >
       {/* Left Panel */}
-      <div 
-        style={{ width: `${leftWidth}%` }}
-        className="border-r border-gray-600 flex flex-col"
+      <div
+        style={{ width: `${leftWidth}%`, borderRight: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column' }}
       >
         {leftPanel}
       </div>
 
       {/* Resizer */}
       <div
-        className={`w-1 bg-gray-600 hover:bg-gray-400 cursor-col-resize flex-shrink-0 transition-colors ${
-          isDragging ? 'bg-blue-500' : ''
-        }`}
+        style={{
+          width: 4, flexShrink: 0, cursor: 'col-resize',
+          background: isDragging ? 'rgba(255,255,255,0.2)' : 'transparent',
+          transition: 'background 0.15s',
+        }}
         onMouseDown={handleMouseDown}
-      >
-        <div className="w-full h-full relative">
-          <div className="absolute inset-y-0 left-0 w-1 hover:w-2 bg-transparent hover:bg-gray-300 transition-all opacity-0 hover:opacity-100" />
-        </div>
-      </div>
+        onMouseEnter={e => { if (!isDragging) (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)'; }}
+        onMouseLeave={e => { if (!isDragging) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+      />
 
       {/* Right Panel */}
       <div 

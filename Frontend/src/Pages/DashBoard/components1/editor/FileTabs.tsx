@@ -10,23 +10,41 @@ interface FileTabsProps {
 
 export const FileTabs: React.FC<FileTabsProps> = ({ files, activeFile, onFileSelect }) => {
   return (
-    <div className="bg-gray-900 px-4 py-2 border-b border-gray-600 flex space-x-1 overflow-x-auto">
-      {files.map((file) => (
-        <button
-          key={file.id}
-          onClick={() => onFileSelect(file)}
-          className={`px-3 py-1 rounded text-sm whitespace-nowrap transition-colors ${
-            activeFile.id === file.id
-              ? 'bg-white text-black'
-              : 'text-gray-400 hover:text-white hover:bg-gray-800'
-          }`}
-        >
-          <div className="flex items-center space-x-2">
-            <FileText className="w-3 h-3" />
+    <div style={{
+      backgroundColor: '#161616',
+      padding: '0 0.75rem',
+      borderBottom: '1px solid rgba(255,255,255,0.07)',
+      display: 'flex',
+      gap: '2px',
+      overflowX: 'auto',
+      flexShrink: 0,
+    }}>
+      {files.map((file) => {
+        const active = activeFile.id === file.id;
+        return (
+          <button
+            key={file.id}
+            onClick={() => onFileSelect(file)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.35rem',
+              padding: '0.45rem 0.75rem',
+              borderRadius: '5px 5px 0 0',
+              background: active ? 'rgba(255,255,255,0.08)' : 'transparent',
+              borderBottom: active ? '1px solid rgba(255,255,255,0.35)' : '1px solid transparent',
+              color: active ? '#fff' : 'rgba(255,255,255,0.38)',
+              fontSize: '0.78rem',
+              whiteSpace: 'nowrap',
+              cursor: 'pointer',
+              transition: 'color 0.15s, background 0.15s',
+            }}
+            onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+            onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'rgba(255,255,255,0.38)'; }}
+          >
+            <FileText size={11} />
             <span>{file.name}</span>
-          </div>
-        </button>
-      ))}
+          </button>
+        );
+      })}
     </div>
   );
 };

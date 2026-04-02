@@ -430,7 +430,7 @@ const handleExportVideo = async () => {
         {/* Timeline and Preview - Right Panel */}
         <div className="flex-1 flex flex-col">
           {/* Preview Area - Increased height */}
-          <div className="flex-grow bg-black border-b border-gray-700 flex flex-col" style={{ minHeight: '0' }}>
+          <div className="flex-grow flex flex-col" style={{ minHeight: '0', backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
             {/* Preview Header */}
             <div className="h-10 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4">
               <span className="text-sm font-medium text-white">Timeline Preview</span>
@@ -450,7 +450,7 @@ const handleExportVideo = async () => {
             </div>
 
             {/* Video Preview - Now takes most of the space */}
-            <div className="flex-1 flex items-center justify-center p-4 bg-black">
+            <div className="flex-1 flex items-center justify-center p-4" style={{ backgroundColor: '#0e0e0e' }}>
               {timelineClips.length === 0 ? (
                 <div className="text-center text-gray-400">
                   <div className="text-lg mb-2">Timeline Preview</div>
@@ -460,7 +460,7 @@ const handleExportVideo = async () => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-black flex items-center justify-center relative">
+                <div className="flex items-center justify-center relative" style={{ backgroundColor: '#161616' }}>
                   <video
                     ref={videoRef}
                     className="rounded-lg border border-gray-600"
@@ -478,17 +478,17 @@ const handleExportVideo = async () => {
                   />
                   
                   {/* Video overlay info - positioned absolutely on the video */}
-                  <div className="absolute top-4 left-4 bg-black bg-opacity-75 px-2 py-1 rounded text-xs text-white">
+                  <div className="absolute top-4 left-4 px-2 py-1 rounded text-xs text-white" style={{ background: 'rgba(22,22,22,0.75)' }}>
                     Clip {currentClipIndex + 1} of {timelineClips.length}
                   </div>
                   
-                  <div className="absolute bottom-4 right-4 bg-black bg-opacity-75 px-2 py-1 rounded text-xs text-white">
+                  <div className="absolute bottom-4 right-4 px-2 py-1 rounded text-xs text-white" style={{ background: 'rgba(22,22,22,0.75)' }}>
                     {currentTime.toFixed(1)}s
                   </div>
 
                   {/* Export status overlay */}
                   {isExporting && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(22,22,22,0.7)' }}>
                       <div className="bg-gray-800 p-4 rounded-lg border border-gray-600 text-center">
                         <Loader className="w-8 h-8 animate-spin mx-auto mb-2 text-green-500" />
                         <div className="text-white text-sm">Exporting Video...</div>

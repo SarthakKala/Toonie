@@ -13,7 +13,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   onDownloadCode
 }) => {
   return (
-    <div className="bg-gray-900 px-4 py-3 border-b border-gray-600 flex items-center justify-between">
+    <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
           <Code className="w-5 h-5 text-white" />

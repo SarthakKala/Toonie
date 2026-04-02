@@ -13,9 +13,9 @@ interface FileExplorerProps {
   defaultCollapsed?: boolean;
 }
 
-export const FileExplorer: React.FC<FileExplorerProps> = ({ 
-  files, 
-  activeFile, 
+export const FileExplorer: React.FC<FileExplorerProps> = ({
+  files,
+  activeFile,
   onFileSelect,
   onNewFile,
   defaultWidth = 250,
@@ -32,8 +32,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const startWidth = useRef(0);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     setIsDragging(true);
     startX.current = e.clientX;
     startWidth.current = width;
@@ -43,12 +42,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
-    
-    const deltaX = e.clientX - startX.current;
-    const newWidth = startWidth.current + deltaX;
-    
-    // Clamp the width within bounds
-    const clampedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
+    const clampedWidth = Math.max(minWidth, Math.min(maxWidth, startWidth.current + (e.clientX - startX.current)));
     setWidth(clampedWidth);
   }, [isDragging, minWidth, maxWidth]);
 
@@ -63,56 +57,39 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
-
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+  const getFileType = (file: CodeFile) => {
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    return ext === 'tsx' || ext === 'ts' ? 'typescript' : ext === 'txt' ? 'txt' : ext || '';
   };
 
-  const getFileIcon = (file: CodeFile) => {
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    switch (extension) {
-      case 'js':
-      case 'jsx':
-        return '📄';
-      case 'ts':
-      case 'tsx':
-        return '📘';
-      case 'md':
-        return '📄';
-      default:
-        return '📄';
-    }
-  };
-
-  const filteredFiles = files.filter(file => 
-    file.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredFiles = files.filter(f => f.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (isCollapsed) {
     return (
-      <div className="bg-gray-900 border-r border-gray-600 flex flex-col items-center py-4 w-12 flex-shrink-0">
-        {/* Collapsed Header */}
+      <div style={{
+        backgroundColor: '#161616', borderRight: '1px solid rgba(255,255,255,0.07)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        padding: '0.75rem 0', width: 44, flexShrink: 0,
+      }}>
         <button
-          onClick={toggleCollapse}
-          className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
+          onClick={() => setIsCollapsed(false)}
           title="Show Explorer"
+          style={{ padding: '0.4rem', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', borderRadius: 5 }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
         >
-          <Folder className="w-4 h-4" />
+          <Folder size={15} />
         </button>
-        
-        {/* Vertical Title */}
-        <div className="mt-4 transform rotate-90 text-xs text-gray-400 whitespace-nowrap origin-center">
+        <div style={{ marginTop: '0.75rem', transform: 'rotate(90deg)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
           Explorer
         </div>
-        
-        {/* File Count */}
-        <div className="mt-6 text-xs text-gray-500 bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center">
+        <div style={{ marginTop: '1rem', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.06)', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {files.length}
         </div>
       </div>
@@ -120,136 +97,129 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   }
 
   return (
-    <div 
+    <div
       ref={explorerRef}
-      className="bg-gray-900 border-r border-gray-600 flex flex-col flex-shrink-0 relative"
-      style={{ width: `${width}px` }}
+      style={{
+        backgroundColor: '#161616', borderRight: '1px solid rgba(255,255,255,0.07)',
+        display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'relative',
+        width: `${width}px`,
+      }}
     >
       {/* Header */}
-      <div className="h-12 bg-gray-900 border-b border-gray-600 flex items-center justify-between px-3 flex-shrink-0">
-        <div className="flex items-center space-x-2">
-          <Folder className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-semibold text-white">Explorer</span>
+      <div style={{
+        height: 44, borderBottom: '1px solid rgba(255,255,255,0.07)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 0.75rem', flexShrink: 0,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <Folder size={13} style={{ color: 'rgba(255,255,255,0.4)' }} />
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff' }}>Explorer</span>
         </div>
-        <div className="flex items-center space-x-1">
-          {/* File count */}
-          <span className="text-xs text-gray-500">{files.length} files</span>
-          {/* New file button */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+          <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)', marginRight: '0.25rem' }}>{files.length} files</span>
           {onNewFile && (
-            <button
-              onClick={onNewFile}
-              className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-              title="New File"
-            >
-              <Plus className="w-3 h-3" />
-            </button>
+            <button onClick={onNewFile} title="New File"
+              style={{ padding: '0.2rem', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', borderRadius: 4 }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+            ><Plus size={12} /></button>
           )}
-          {/* Collapse button */}
-          <button
-            onClick={toggleCollapse}
-            className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-            title="Hide Explorer"
-          >
-            <PanelLeftClose className="w-4 h-4" />
-          </button>
+          <button onClick={() => setIsCollapsed(true)} title="Hide Explorer"
+            style={{ padding: '0.2rem', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', borderRadius: 4 }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+          ><PanelLeftClose size={13} /></button>
         </div>
       </div>
 
       {/* Search */}
-      <div className="p-3 border-b border-gray-700 flex-shrink-0">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
+      <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid rgba(255,255,255,0.05)', flexShrink: 0 }}>
+        <div style={{ position: 'relative' }}>
+          <Search size={11} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
           <input
             type="text"
             placeholder="Search files..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            onChange={e => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%', paddingLeft: 26, paddingRight: 8, paddingTop: 6, paddingBottom: 6,
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 6, color: '#fff', fontSize: '0.75rem', outline: 'none',
+              fontFamily: 'inherit', boxSizing: 'border-box',
+            }}
+            onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)')}
+            onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
           />
         </div>
       </div>
 
-      {/* File List */}
-      <div className="flex-1 overflow-y-auto p-2">
-        <div className="space-y-1">
-          {filteredFiles.length === 0 ? (
-            <div className="text-center py-8">
-              <FileText className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <p className="text-sm text-gray-400">
-                {searchTerm ? 'No matching files' : 'No files yet'}
-              </p>
-              {onNewFile && !searchTerm && (
+      {/* File list */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0.4rem' }}>
+        {filteredFiles.length === 0 ? (
+          <div style={{ textAlign: 'center', paddingTop: '2rem' }}>
+            <FileText size={28} style={{ color: 'rgba(255,255,255,0.12)', margin: '0 auto 0.5rem' }} />
+            <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>
+              {searchTerm ? 'No matching files' : 'No files yet'}
+            </p>
+            {onNewFile && !searchTerm && (
+              <button onClick={onNewFile}
+                style={{ marginTop: '0.4rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', background: 'none', border: 'none', cursor: 'pointer' }}
+              >Create your first file</button>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {filteredFiles.map(file => {
+              const active = activeFile.id === file.id;
+              return (
                 <button
-                  onClick={onNewFile}
-                  className="mt-2 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                  key={file.id}
+                  onClick={() => onFileSelect(file)}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '0.4rem 0.6rem',
+                    borderRadius: 5,
+                    background: active ? 'rgba(255,255,255,0.09)' : 'transparent',
+                    border: active ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
+                    color: active ? '#fff' : 'rgba(255,255,255,0.45)',
+                    fontSize: '0.78rem', cursor: 'pointer',
+                    transition: 'background 0.12s, color 0.12s',
+                    display: 'flex', alignItems: 'center', gap: '0.4rem',
+                  }}
+                  onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; } }}
+                  onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; } }}
                 >
-                  Create your first file
-                </button>
-              )}
-            </div>
-          ) : (
-            filteredFiles.map((file) => (
-              <button
-                key={file.id}
-                onClick={() => onFileSelect(file)}
-                className={`w-full text-left px-3 py-2 rounded text-sm transition-colors group ${
-                  activeFile.id === file.id
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs">{getFileIcon(file)}</span>
-                  <FileText className="w-3 h-3 flex-shrink-0" />
-                  <span className="truncate flex-1">{file.name}</span>
+                  <FileText size={11} style={{ flexShrink: 0 }} />
+                  <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</span>
                   {file.language && (
-                    <span className="text-xs text-gray-500 group-hover:text-gray-400">
-                      {file.language}
-                    </span>
+                    <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.22)', flexShrink: 0 }}>{getFileType(file)}</span>
                   )}
-                </div>
-              </button>
-            ))
-          )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: '0.4rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.05)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'rgba(255,255,255,0.22)' }}>
+          <span>{filteredFiles.length} of {files.length} files</span>
         </div>
       </div>
 
-      {/* Stats Footer */}
-      <div className="p-3 border-t border-gray-700 bg-gray-850 flex-shrink-0">
-        <div className="flex justify-between items-center text-xs text-gray-400">
-          <span>
-            {filteredFiles.length} of {files.length} files
-          </span>
-          <span className="text-gray-500">
-            {width}px
-          </span>
-        </div>
-      </div>
-
-      {/* Resize Handle */}
+      {/* Resize handle */}
       <div
-        className={`absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors z-10 ${
-          isDragging ? 'bg-blue-500' : 'bg-transparent hover:bg-blue-400'
-        }`}
         style={{
-          right: '-2px',
-          width: '4px'
+          position: 'absolute', top: 0, bottom: 0, right: -2, width: 4,
+          cursor: 'col-resize', zIndex: 10,
+          background: isDragging ? 'rgba(255,255,255,0.25)' : 'transparent',
+          transition: 'background 0.15s',
         }}
         onMouseDown={handleMouseDown}
-      >
-        {/* Visual indicator */}
-        <div className="w-full h-full flex items-center justify-center">
-          <div className={`w-0.5 h-8 transition-opacity ${
-            isDragging ? 'bg-blue-300 opacity-100' : 'bg-gray-500 opacity-0 hover:opacity-100'
-          }`} />
-        </div>
-      </div>
-
-      {/* Drag overlay when dragging */}
-      {isDragging && (
-        <div className="fixed inset-0 z-50 pointer-events-none" 
-             style={{ cursor: 'col-resize' }} />
-      )}
+        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
+        onMouseLeave={e => { if (!isDragging) e.currentTarget.style.background = 'transparent'; }}
+      />
+      {isDragging && <div style={{ position: 'fixed', inset: 0, zIndex: 50, cursor: 'col-resize', pointerEvents: 'none' }} />}
     </div>
   );
 };

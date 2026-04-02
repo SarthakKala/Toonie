@@ -185,10 +185,10 @@ export const Timeline: React.FC<TimelineProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-900">
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#161616' }}>
       {/* Timeline Header */}
-      <div className="h-8 bg-gray-800 border-b border-gray-600 flex items-center justify-between px-4 flex-shrink-0">
-        <span className="text-xs font-medium text-white">Timeline</span>
+      <div style={{ height: 32, borderBottom: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', flexShrink: 0, backgroundColor: '#161616' }}>
+        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#fff' }}>Timeline</span>
         <div className="flex items-center space-x-2">
           {/* Zoom Controls */}
           <button
@@ -220,26 +220,23 @@ export const Timeline: React.FC<TimelineProps> = ({
       {/* Timeline Content */}
       <div className="flex-1 flex flex-col">
         {loading ? (
-          <div className="h-full flex items-center justify-center text-gray-400">
-            <p>Loading timeline...</p>
+          <div className="h-full flex items-center justify-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            <p style={{ fontSize: '0.78rem' }}>Loading timeline...</p>
           </div>
         ) : clips.length === 0 ? (
-          <div className="h-full flex items-center justify-center text-gray-400">
-            <div className="text-center">
-              <p className="text-lg mb-2">Timeline is empty</p>
-              <p className="text-sm">Add clips from the Media Library to get started</p>
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              <p style={{ fontSize: '0.9rem', marginBottom: '0.3rem' }}>Timeline is empty</p>
+              <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.2)' }}>Add clips from the Media Library to get started</p>
             </div>
           </div>
         ) : (
           <div className="flex-1 flex flex-col">
             {/* Time Ruler */}
-            <div className="h-1 bg-gray-800 border-b border-gray-600 relative overflow-x-auto flex-shrink-0"> {/* Reduced from h-8 to h-6 */}
-              <div 
+            <div className="h-1 relative overflow-x-auto flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', backgroundColor: '#161616' }}>
+              <div
                 className="h-full relative"
-                style={{ 
-                  width: `${Math.max(timelineWidth, timelineWidth * zoom)}px`,
-                  minWidth: '100%'
-                }}
+                style={{ width: `${Math.max(timelineWidth, timelineWidth * zoom)}px`, minWidth: '100%' }}
               >
                 {generateTimeMarkers()}
               </div>
@@ -247,23 +244,25 @@ export const Timeline: React.FC<TimelineProps> = ({
 
             {/* Timeline Track Area */}
             <div className="flex-1 overflow-x-auto overflow-y-hidden">
-              <div 
+              <div
                 ref={timelineRef}
-                className="h-full relative bg-gray-850"
-                style={{ 
+                className="h-full relative"
+                style={{
                   minWidth: '100%',
                   width: `${Math.max(timelineWidth, timelineWidth * zoom)}px`,
-                  minHeight: '10px' // Reduced from 120px
+                  minHeight: '10px',
+                  backgroundColor: '#161616',
                 }}
               >
                 {/* Timeline Track Background */}
-                <div 
+                <div
                   ref={timelineTrackRef}
-                  className="absolute top-2 bottom-2 bg-gray-800 rounded cursor-pointer" // Reduced top/bottom from 4px to 2px
-                  style={{ 
-                    left: '16px',
-                    right: '16px',
-                    width: `${timelineWidth * zoom}px`
+                  className="absolute top-2 bottom-2 rounded cursor-pointer"
+                  style={{
+                    left: '16px', right: '16px',
+                    width: `${timelineWidth * zoom}px`,
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.07)',
                   }}
                   onClick={handleTimelineClick}
                 />
@@ -283,15 +282,15 @@ export const Timeline: React.FC<TimelineProps> = ({
                     return (
                       <div
                         key={`${clip.id}-${index}`}
-                        className={`absolute top-2 h-12 bg-blue-600 rounded border-2 overflow-hidden cursor-move transition-all select-none ${
-                          draggedIndex === index ? 'opacity-50 scale-105 z-10' : ''
-                        } ${
-                          dragOverIndex === index ? 'border-blue-300' : 'border-blue-500'
-                        }`}
                         style={{
-                          left: `${clipLeftPx}px`,
-                          width: `${Math.max(80, clipWidthPx)}px`, // Minimum width for usability
+                          position: 'absolute', top: 8, height: 48,
+                          background: dragOverIndex === index ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.1)',
+                          border: `1px solid ${dragOverIndex === index ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.18)'}`,
+                          borderRadius: 5, overflow: 'hidden', cursor: 'move',
+                          opacity: draggedIndex === index ? 0.5 : 1,
+                          left: `${clipLeftPx}px`, width: `${Math.max(80, clipWidthPx)}px`,
                         }}
+                        className="transition-all select-none"
                         draggable
                         onDragStart={(e) => handleDragStart(e, index)}
                         onDragOver={(e) => handleDragOver(e, index)}
@@ -311,8 +310,8 @@ export const Timeline: React.FC<TimelineProps> = ({
                         
                         {/* Clip Info */}
                         <div className="absolute inset-0 p-1 flex flex-col justify-between text-white text-xs pointer-events-none">
-                          <div className="font-medium truncate">{clip.metadata.name}</div>
-                          <div className="text-blue-200">
+                          <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{clip.metadata.name}</div>
+                          <div style={{ color: 'rgba(255,255,255,0.45)' }}>
                             {clip.metadata.duration.toFixed(1)}s
                           </div>
                         </div>
@@ -323,14 +322,15 @@ export const Timeline: React.FC<TimelineProps> = ({
                             e.stopPropagation();
                             onRemoveClip(clip.id);
                           }}
-                          className="absolute -top-2 -right-2 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-xs z-20 pointer-events-auto"
+                          className="absolute -top-2 -right-2 w-5 h-5 text-white rounded-full flex items-center justify-center text-xs z-20 pointer-events-auto"
+                          style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}
                           title="Remove from timeline"
                         >
                           <X className="w-3 h-3" />
                         </button>
 
                         {/* Drag Handle (Visual indicator) */}
-                        <div className="absolute top-1 left-1 right-1 h-1 bg-blue-400 opacity-50 rounded-full pointer-events-none" />
+                        <div className="absolute top-1 left-1 right-1 h-0.5 rounded-full pointer-events-none" style={{ background: 'rgba(255,255,255,0.25)' }} />
                       </div>
                     );
                   })}
@@ -338,16 +338,14 @@ export const Timeline: React.FC<TimelineProps> = ({
                   {/* Playhead */}
                   {totalDuration > 0 && (
                     <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-30 pointer-events-none"
+                      className="absolute top-0 bottom-0 w-px z-30 pointer-events-none"
                       style={{
                         left: `${(currentTime / totalDuration) * (timelineWidth * zoom)}px`,
-                        boxShadow: '0 0 4px rgba(239, 68, 68, 0.8)'
+                        background: 'rgba(255,255,255,0.7)',
+                        boxShadow: '0 0 4px rgba(255,255,255,0.4)'
                       }}
                     >
-                      {/* Playhead Handle */}
-                      <div className="absolute -top-1 -left-2 w-4 h-3 bg-red-500 rounded-sm shadow-lg" />
-                      {/* Playhead Line Extension */}
-                      <div className="absolute top-0 bottom-0 -left-0.5 w-1 bg-red-500 opacity-60" />
+                      <div className="absolute -top-1 -left-1.5 w-3 h-2 rounded-sm shadow-lg" style={{ background: 'rgba(255,255,255,0.8)' }} />
                     </div>
                   )}
                 </div>
@@ -358,7 +356,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
         {/* Timeline Footer */}
         {clips.length > 0 && (
-          <div className="h-5 bg-gray-850 border-t border-gray-700 flex items-center justify-between px-4 text-xs text-gray-400 flex-shrink-0"> {/* Reduced from h-8 to h-6 */}
+          <div style={{ height: 28, borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', fontSize: '0.68rem', color: 'rgba(255,255,255,0.28)', flexShrink: 0 }}>
             <div className="flex items-center space-x-4">
               <span>{clips.length} clips</span>
               <span>Zoom: {(zoom * 100).toFixed(0)}%</span>
