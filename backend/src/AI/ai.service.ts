@@ -37,8 +37,8 @@ export interface GenerateCodeOptions {
 @Injectable()
 export class AIService {
   private readonly logger = new Logger(AIService.name);
-  private client: AxiosInstance;
-  private defaultModel: string = 'deepseek/deepseek-chat-v3-0324:free';
+  private client!: AxiosInstance;
+  private defaultModel: string = 'qwen/qwen3.6-plus:free';
 
   constructor(private configService: ConfigService) {
     this.initializeClient();
@@ -94,7 +94,7 @@ export class AIService {
         throw new HttpException('No response generated from AI', HttpStatus.BAD_GATEWAY);
       }
 
-      const generatedContent = aiResponse.choices[0].message.content;
+      const generatedContent = aiResponse.choices[0].message.content ?? '';
       const extractedCode = this.extractCodeFromResponse(generatedContent);
       const explanation = this.extractExplanation(generatedContent);
 
@@ -151,38 +151,33 @@ private createSystemPrompt(context: GenerateCodeOptions['context'] = {}): string
     style = 'modern'
   } = context;
 
-  return `You are an expert p5.js developer. Generate clean, complete p5.js code.
+  return `You are an expert p5.js developer. Generate clean, complete p5.js animations.
 
-  REQUIREMENTS:
-  - Use p5.js instance mode with the following format:
-  - Canvas size: ${width || 600}x${height || 400}
-  - Animation duration: ${duration} seconds
-  - Style: ${style}
-  - Add meaningful comments
-  - Use smooth animations and good performance
+RULES:
+- No emojis in any part of your response.
+- Keep your explanation to 1-2 sentences maximum. Be brief and direct.
+- Use p5.js instance mode only.
+- Canvas size: ${width}x${height}
+- Animation duration: ${duration} seconds
+- Style: ${style}
+- Add concise inline comments only where needed.
 
-  RESPONSE FORMAT:
-  First, provide a brief explanation of what the animation does.
+RESPONSE FORMAT:
+One short sentence describing the animation, then the code block:
 
-  Then provide the complete code in a single code block like this:
+\`\`\`javascript
+function sketch(p) {
+  p.setup = function() {
+    p.createCanvas(${width}, ${height});
+  };
 
-  \`\`\`javascript
-  // p5.js instance mode sketch
-  function sketch(p) {
-    p.setup = function() {
-      p.createCanvas(${width}, ${height});
-      // initialization code
-    };
+  p.draw = function() {
+    // animation code
+  };
+}
+\`\`\`
 
-    p.draw = function() {
-      // animation code
-    };
-
-    // Helper functions can go here
-  }
-  \`\`\`
-
-  Make sure the code is complete, uses instance mode, and is runnable.`;
+Output nothing after the code block. Code must be complete and runnable.`;
 }
 
   // Update the extractCodeFromResponse method
@@ -262,12 +257,12 @@ Please provide the improved version with explanations of the changes made.`;
       const messages: AIMessage[] = [
         {
           role: 'system',
-          content: 'You are a helpful AI assistant specialized in p5.js creative coding and web development. Help users with their coding questions, provide explanations, and offer creative suggestions.'
+          content: 'You are a concise assistant specialized in p5.js and creative coding. Answer questions briefly and directly. No emojis. No long explanations — get to the point in 2-4 sentences unless the user asks for more detail.'
         },
         ...conversationHistory,
         { role: 'user', content: message }
       ];
-      console.error(`Chatting with AI: ${messages}`);
+      console.log(`Chatting with AI, messages count: ${messages.length}`);
       const response = await this.client.post('/chat/completions', {
         model: this.defaultModel,
         messages,
@@ -279,7 +274,7 @@ Please provide the improved version with explanations of the changes made.`;
       return {
         success: true,
         data: {
-          code: aiResponse.choices[0].message.content,
+          code: aiResponse.choices[0].message.content ?? '',
           explanation: 'Chat response',
           model: this.defaultModel,
           usage: aiResponse.usage

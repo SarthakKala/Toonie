@@ -1,4 +1,4 @@
-const API_BASE_URL =  "https://toonie-cb32.onrender.com/api"; // Adjust port as needed
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 export interface AIResponse {
   success: boolean;
   data: {

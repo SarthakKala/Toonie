@@ -8,7 +8,8 @@ export const useChat = () => {
     {
       id: '0',
       role: 'system',
-      content: 'Hi! I\'m your AI assistant. I can help you with p5.js animations and coding questions. Type /animate or /generate followed by your idea to create animations!'
+      content: 'Hi! I\'m your AI assistant. I can help you with p5.js animations and coding questions. Type /animate or /generate followed by your idea to create animations!',
+      timestamp: new Date()
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +20,8 @@ export const useChat = () => {
     const newMessage: Message = {
       id: Date.now().toString(),
       role,
-      content
+      content,
+      timestamp: new Date()
     };
     setMessages(prev => [...prev, newMessage]);
     return newMessage;
