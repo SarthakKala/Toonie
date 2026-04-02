@@ -75,22 +75,40 @@ export const TabbedEditor: React.FC<TabbedEditorProps> = ({
       <button
         onClick={() => setEditorMode(mode)}
         title={label}
+        aria-pressed={active}
         style={{
-          padding: '0.5rem',
-          borderRadius: '6px',
-          background: active ? 'rgba(255,255,255,0.12)' : 'transparent',
-          border: active ? '1px solid rgba(255,255,255,0.14)' : '1px solid transparent',
-          color: active ? '#fff' : 'rgba(255,255,255,0.4)',
+          padding: '0.48rem 0.8rem',
+          borderRadius: '7px',
+          background: active ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.06)',
+          border: active ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(255,255,255,0.1)',
+          color: active ? '#161616' : 'rgba(255,255,255,0.85)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: '0.42rem',
+          minWidth: '98px',
+          fontSize: '0.76rem',
+          fontWeight: 600,
+          letterSpacing: '0.01em',
           cursor: 'pointer',
-          transition: 'background 0.15s, color 0.15s',
+          boxShadow: active ? '0 0 0 1px rgba(255,255,255,0.15), 0 5px 14px rgba(0,0,0,0.35)' : 'none',
+          transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
         }}
-        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; }}
-        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; }}
+        onMouseEnter={e => {
+          if (!active) {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.12)';
+            e.currentTarget.style.color = '#fff';
+          }
+        }}
+        onMouseLeave={e => {
+          if (!active) {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+            e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+          }
+        }}
       >
         {icon}
+        <span>{label}</span>
       </button>
     );
   };
@@ -129,8 +147,8 @@ export const TabbedEditor: React.FC<TabbedEditorProps> = ({
 
       {/* Header */}
       <div style={{
-        height: '52px',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        height: '56px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -141,15 +159,12 @@ export const TabbedEditor: React.FC<TabbedEditorProps> = ({
         {/* Tab switcher */}
         <div style={{
           display: 'flex',
-          gap: '2px',
-          padding: '3px',
-          borderRadius: '8px',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          gap: '0.38rem',
+          marginLeft: '-0.1rem',
         }}>
-          {tabBtn("code", <Code size={16} />, "Code Editor")}
-          {tabBtn("preview", <Monitor size={16} />, "Preview")}
-          {tabBtn("video", <Video size={16} />, "Video Editor")}
+          {tabBtn("code", <Code size={15} />, "Code")}
+          {tabBtn("preview", <Monitor size={15} />, "Preview")}
+          {tabBtn("video", <Video size={15} />, "Video")}
         </div>
 
         {/* Center label */}
