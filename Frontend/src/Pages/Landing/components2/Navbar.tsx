@@ -137,33 +137,34 @@ const Navbar: React.FC = () => {
           </a>
         </div>
 
-        {/* Right — Settings button */}
+        {/* Right — Settings pill */}
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <a
             href="#"
             style={{
               display: "inline-flex",
               alignItems: "center",
-              padding: "0.38rem 1rem",
-              borderRadius: "8px",
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: "rgba(255,255,255,0.06)",
-              color: "rgba(255,255,255,0.85)",
-              fontSize: "0.82rem",
+              padding: "0.3rem 1rem",
+              borderRadius: "999px",
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.04)",
+              color: "rgba(255,255,255,0.55)",
+              fontSize: "0.78rem",
+              letterSpacing: "0.04em",
               fontWeight: 500,
               textDecoration: "none",
-              transition: "background 0.15s, border-color 0.15s, color 0.15s",
+              transition: "background 0.18s, border-color 0.18s, color 0.18s",
               cursor: "pointer",
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.11)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.35)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
               e.currentTarget.style.color = "#fff";
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-              e.currentTarget.style.color = "rgba(255,255,255,0.85)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.55)";
             }}
           >
             Settings
