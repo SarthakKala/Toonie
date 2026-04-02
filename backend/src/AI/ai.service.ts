@@ -158,6 +158,7 @@ RULES:
 - Keep your explanation to 1-2 sentences maximum. Be brief and direct.
 - Use p5.js instance mode only.
 - Canvas size: ${width}x${height}
+- Always call p.frameRate(60) inside p.setup for smooth playback.
 - Animation duration: ${duration} seconds
 - Style: ${style}
 - Add concise inline comments only where needed.
@@ -169,6 +170,7 @@ One short sentence describing the animation, then the code block:
 function sketch(p) {
   p.setup = function() {
     p.createCanvas(${width}, ${height});
+    p.frameRate(60);
   };
 
   p.draw = function() {

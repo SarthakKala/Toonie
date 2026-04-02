@@ -342,7 +342,7 @@ const handleExportVideo = async () => {
         setExportProgress(100);
         
         const fileSizeMB = (finalBlob.size / 1024 / 1024).toFixed(2);
-        alert(`✅ Video exported successfully!\n📁 File size: ${fileSizeMB} MB\n🎬 Duration: ${totalDuration.toFixed(1)}s\n📊 Quality: ${targetFPS} FPS`);
+        alert(`Video exported successfully.\nFile size: ${fileSizeMB} MB\nDuration: ${totalDuration.toFixed(1)}s\nQuality: ${targetFPS} FPS`);
         resolve();
       };
 

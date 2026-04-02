@@ -73,7 +73,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
       await new Promise(resolve => setTimeout(resolve, 1000));
       const freshCanvas = p5PreviewRef.current?.getCanvas();
       if (!freshCanvas) throw new Error('Canvas lost after restart');
-      const blob = await startRecording(freshCanvas, { duration: recordingDuration * 1000, frameRate: 30 });
+      const blob = await startRecording(freshCanvas, { duration: recordingDuration * 1000, frameRate: 60 });
       if (blob.size === 0) throw new Error('Recorded video has no content');
       setIsSaving(true);
       const clipName = `${activeFile.name.replace('.tsx', '')} Animation`;
@@ -97,7 +97,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
       await new Promise(resolve => setTimeout(resolve, 1000));
       const freshCanvas = p5PreviewRef.current?.getCanvas();
       if (!freshCanvas) throw new Error('Canvas lost after restart');
-      const blob = await startRecording(freshCanvas, { duration: recordingDuration * 1000, frameRate: 30 });
+      const blob = await startRecording(freshCanvas, { duration: recordingDuration * 1000, frameRate: 60 });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

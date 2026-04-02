@@ -17,7 +17,7 @@ export const useVideoRecording = () => {
     canvas: HTMLCanvasElement,
     options: RecordingOptions = {}
   ): Promise<Blob> => {
-    const { duration = 10000, frameRate = 30 } = options;
+    const { duration = 10000, frameRate = 60 } = options;
     
     return new Promise((resolve, reject) => {
       try {
@@ -85,7 +85,7 @@ export const useVideoRecording = () => {
         try {
           mediaRecorder = new MediaRecorder(stream, {
             mimeType: selectedMimeType,
-            videoBitsPerSecond: 2500000 // 2.5 Mbps
+            videoBitsPerSecond: 10000000 // 10 Mbps for smooth quality
           });
         } catch (recorderError) {
           console.error('MediaRecorder creation failed:', recorderError);
