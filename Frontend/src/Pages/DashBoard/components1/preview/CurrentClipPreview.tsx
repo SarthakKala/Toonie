@@ -51,6 +51,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
   isLoading = false
 }) => {
   const code = useCodeStore(state => state.code);
+  const explanation = useCodeStore(state => state.explanation);
   const [isMaximized, setIsMaximized] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(5);
   const [isSaving, setIsSaving] = useState(false);
@@ -76,7 +77,9 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
       const blob = await startRecording(freshCanvas, { duration: recordingDuration * 1000, frameRate: 60 });
       if (blob.size === 0) throw new Error('Recorded video has no content');
       setIsSaving(true);
-      const clipName = `${activeFile.name.replace('.tsx', '')} Animation`;
+      const clipName = explanation
+        ? explanation.replace(/[^a-zA-Z0-9 ]/g, '').trim().split(/\s+/).slice(0, 5).join(' ')
+        : `Animation ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
       const clipId = await clipStorage.saveClip({ blob, name: clipName, duration: recordingDuration, type: 'animation', content: code });
       console.log('Clip saved with ID:', clipId);
       onExportClip({ blob, name: clipName, duration: recordingDuration });
@@ -101,7 +104,7 @@ export const CurrentClipPreview: React.FC<CurrentClipPreviewProps> = ({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${activeFile.name.replace('.tsx', '')}_animation.webm`;
+      a.download = `ToonieAnimation_${Date.now()}.webm`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
