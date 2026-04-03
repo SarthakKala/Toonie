@@ -24,8 +24,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   onReorderClips,
   onSeekTo,
   currentTime = 0,
-  totalDuration = 0,
-  isPlaying = false
+  totalDuration = 0
 }) => {
   const [clipData, setClipData] = useState<ClipData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -87,9 +86,6 @@ export const Timeline: React.FC<TimelineProps> = ({
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
-
-  // Calculate pixels per second based on zoom
-  const pixelsPerSecond = Math.max(100, (timelineWidth * zoom) / Math.max(totalDuration, 1));
 
   // Handle drag start
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -185,7 +181,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   };
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#161616' }}>
+    <div style={{ height: '100%', width: '100%', minWidth: 0, display: 'flex', flexDirection: 'column', backgroundColor: '#161616', overflow: 'hidden' }}>
       {/* Timeline Header */}
       <div style={{ height: 32, borderBottom: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', flexShrink: 0, backgroundColor: '#161616' }}>
         <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#fff' }}>Timeline</span>
@@ -278,6 +274,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                   {clipData.map((clip, index) => {
                     const clipWidthPx = (clip.metadata.duration / totalDuration) * (timelineWidth * zoom);
                     const clipLeftPx = (clip.startTime / totalDuration) * (timelineWidth * zoom);
+                    const displayName = `Clip${index + 1}`;
                     
                     return (
                       <div
@@ -310,7 +307,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                         
                         {/* Clip Info */}
                         <div className="absolute inset-0 p-1 flex flex-col justify-between text-white text-xs pointer-events-none">
-                          <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{clip.metadata.name}</div>
+                          <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
                           <div style={{ color: 'rgba(255,255,255,0.45)' }}>
                             {clip.metadata.duration.toFixed(1)}s
                           </div>

@@ -19,7 +19,6 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   const [exportProgress, setExportProgress] = useState(0);
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
   const [currentClipIndex, setCurrentClipIndex] = useState(0);
 
@@ -121,7 +120,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
 
   // Auto-advance time when playing
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isPlaying && totalDuration > 0) {
       interval = setInterval(() => {
         setCurrentTime(prev => {
@@ -239,7 +238,6 @@ const handleExportVideo = async () => {
 
     // Calculate total duration for progress tracking
     const totalDuration = videoElements.reduce((sum, item) => sum + item.duration, 0);
-    let accumulatedTime = 0;
     let startTime: number | null = null;
     let rafId: number | null = null;
     let lastFrameTime = 0;
@@ -442,7 +440,15 @@ const handleExportVideo = async () => {
       {/* Main Editor Layout */}
       <div className="flex-1 flex">
         {/* Media Library - Left Panel */}
-        <div className="w-1/3" style={{ borderRight: '1px solid rgba(255,255,255,0.14)' }}>
+        <div
+          style={{
+            width: '23%',
+            minWidth: '220px',
+            maxWidth: '300px',
+            borderRight: '1px solid rgba(255,255,255,0.14)',
+            flexShrink: 0,
+          }}
+        >
           <MediaLibrary
             onSelectClip={handleSelectClip}
             onAddToTimeline={handleAddToTimeline}
@@ -451,7 +457,7 @@ const handleExportVideo = async () => {
         </div>
 
         {/* Timeline and Preview - Right Panel */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col" style={{ minWidth: 0, overflow: 'hidden' }}>
           {/* Preview Area - Increased height */}
           <div className="flex-grow flex flex-col" style={{ minHeight: '0', backgroundColor: '#161616', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
             {/* Preview Header */}
@@ -488,15 +494,24 @@ const handleExportVideo = async () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center relative" style={{ backgroundColor: '#161616' }}>
+                <div
+                  className="flex items-center justify-center relative"
+                  style={{
+                    backgroundColor: '#161616',
+                    width: '100%',
+                    maxWidth: '480px',
+                  }}
+                >
                   <video
                     ref={videoRef}
                     className="rounded-lg"
                     width={600}
                     height={450}
                     style={{
-                      width: '600px',
-                      height: '450px',
+                      width: '100%',
+                      maxWidth: '480px',
+                      height: 'auto',
+                      aspectRatio: '4 / 3',
                       display: 'block',
                       objectFit: 'cover',
                       border: '1px solid rgba(255,255,255,0.12)'
@@ -551,7 +566,7 @@ const handleExportVideo = async () => {
           </div>
 
           {/* Timeline - Reduced to fixed small height */}
-          <div className="flex-shrink-0" style={{ height: '140px' }}>
+          <div className="flex-shrink-0" style={{ height: '140px', minWidth: 0, overflow: 'hidden' }}>
             <Timeline 
               clips={timelineClips} 
               onRemoveClip={(clipId) => {

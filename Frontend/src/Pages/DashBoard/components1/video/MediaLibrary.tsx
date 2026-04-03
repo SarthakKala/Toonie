@@ -131,8 +131,9 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {clips.map(clip => {
+            {clips.map((clip, index) => {
               const active = selectedClip?.id === clip.id;
+              const displayName = `Clip${index + 1}`;
               return (
                 <div
                   key={clip.id}
@@ -155,7 +156,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '0.78rem', fontWeight: 500, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginRight: 6 }}>
-                          {clip.name}
+                          {displayName}
                         </span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', flexShrink: 0 }}>
                           <Clock size={9} />
