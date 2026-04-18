@@ -38,7 +38,8 @@ export interface GenerateCodeOptions {
 export class AIService {
   private readonly logger = new Logger(AIService.name);
   private client!: AxiosInstance;
-  private defaultModel: string = 'qwen/qwen3.6-plus:free';
+  /** Must match an id from https://openrouter.ai/docs (invalid ids return 404 from OpenRouter). */
+  private defaultModel: string = 'qwen/qwen3-coder:free';
 
   constructor(private configService: ConfigService) {
     this.initializeClient();
